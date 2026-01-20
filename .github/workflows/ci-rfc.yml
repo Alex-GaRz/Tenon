@@ -4,10 +4,38 @@ on:
     paths:
       - "rfc/**"
       - ".github/workflows/ci-rfc.yml"
+
 jobs:
   rfc_checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Ensure RFC index exists
         run: test -f rfc/RFC-INDEX.md
+
+      - name: Enforce RFC filename convention
+        run: |
+          set -e
+          # Permite: RFC-00_..., RFC-01_..., RFC-01A_... (enmiendas con sufijo A)
+          bad=$(find rfc -maxdepth 1 -type f -name "RFC-*.md" \
+            ! -regex ".*/RFC-[0-9][0-9]A\?_.*\.md" \
+            -print)
+          if [ -n "$bad" ]; then
+            echo "Invalid RFC filename(s):"
+            echo "$bad"
+            exit 1
+          fi
+
+      - name: Require RFC template sections (minimum)
+        run: |
+          set -e
+          # Verifica secciones mínimas en cada RFC (excepto index)
+          for f in $(find rfc -maxdepth 1 -type f -name "RFC-*.md"); do
+            grep -q "^## Propósito" "$f"
+            grep -q "^## No-Goals" "$f"
+            grep -q "^## Invariantes" "$f"
+            grep -q "^## Threat Model" "$f"
+            grep -q "^## Pruebas" "$f"
+            grep -q "^## Criterios de Aceptación" "$f"
+          done
