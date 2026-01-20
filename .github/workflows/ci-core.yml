@@ -1,0 +1,16 @@
+name: ci-core
+on:
+  pull_request:
+    paths:
+      - "core/**"
+      - ".github/workflows/ci-core.yml"
+jobs:
+  core_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Etapa 0 guard (core must be README only)
+        run: |
+          set -e
+          files=$(find core -type f | wc -l | tr -d ' ')
+          test "$files" -eq 1

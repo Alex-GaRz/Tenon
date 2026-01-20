@@ -1,0 +1,13 @@
+name: ci-rfc
+on:
+  pull_request:
+    paths:
+      - "rfc/**"
+      - ".github/workflows/ci-rfc.yml"
+jobs:
+  rfc_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure RFC index exists
+        run: test -f rfc/RFC-INDEX.md

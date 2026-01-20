@@ -1,0 +1,13 @@
+name: ci-contracts
+on:
+  pull_request:
+    paths:
+      - "contracts/**"
+      - ".github/workflows/ci-contracts.yml"
+jobs:
+  contracts_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure versioning policy exists
+        run: test -f contracts/VERSIONING.md

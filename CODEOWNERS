@@ -1,0 +1,7 @@
+ /rfc/            @principal-architect
+ /contracts/      @principal-architect
+ /core/           @principal-architect
+ /adapters/       @integration-lead
+ /evidence/       @forensic-owner
+ /tests_systemic/ @qa-institutional
+ /tools/          @platform
