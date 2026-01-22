@@ -14,7 +14,7 @@ from typing import Dict, Any, List
 class IdempotencyKeyGenerator:
     """Generates deterministic idempotency keys for canonical events."""
     
-    # Field priority for key derivation (in order of preference)
+    # ACTUALIZADO: Se incluyen versiones para que afecten la identidad
     KEY_FIELDS_PRIORITY = [
         "source_event_id",
         "external_reference",
@@ -24,7 +24,11 @@ class IdempotencyKeyGenerator:
         "amount",
         "currency",
         "direction",
-        "event_type"
+        "event_type",
+        "normalizer_version",        # Nuevo
+        "adapter_version",           # Nuevo
+        "schema_version",            # Nuevo
+        "_canonicalization_context"  # Nuevo (usado por el test)
     ]
     
     def __init__(self, version: str = "1.0.0"):
