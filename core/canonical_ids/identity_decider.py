@@ -66,48 +66,53 @@ class IdentityDecider:
         existing_events: Optional[Dict[str, Dict[str, Any]]] = None
     ) -> IdentityMatch:
         """
-        Make identity decision for an event.
-        
-        Args:
-            idempotency_key: Deterministic idempotency key
-            event: Canonical event to decide on
-            existing_events: Map of idempotency_key → existing event
-        
-        Returns:
-            IdentityMatch with decision and evidence
+        Conservative strategy:
+        - Check for exact hash match (Collision on Key)
+        - Check for identifier collision (Same Source ID, different hash)
         """
-        # No existing events → ACCEPT
-        if not existing_events or idempotency_key not in existing_events:
-            return IdentityMatch(
-                decision=IdentityDecision.ACCEPT,
-                match_score=0.0,
-                reason="No existing event with this idempotency key"
-            )
+        if not existing_events:
+            return IdentityMatch(decision=IdentityDecision.ACCEPT, reason="No existing events")
+
+        # 1. Búsqueda por Llave Exacta (Hash Collision)
+        if idempotency_key in existing_events:
+            existing_event = existing_events[idempotency_key]
+            conflicts = self._find_conflicts(event, existing_event)
+            
+            if not conflicts:
+                return IdentityMatch(
+                    decision=IdentityDecision.REJECT_DUPLICATE,
+                    matched_event_id=existing_event.get("event_id"),
+                    match_score=1.0,
+                    reason=f"Exact duplicate of event {existing_event.get('event_id')}"
+                )
+            else:
+                return IdentityMatch(
+                    decision=IdentityDecision.FLAG_AMBIGUOUS,
+                    matched_event_id=existing_event.get("event_id"),
+                    match_score=0.5,
+                    conflicting_fields=conflicts,
+                    reason=f"Partial match (same key, different fields) with event {existing_event.get('event_id')}"
+                )
+
+        # 2. Búsqueda por Colisión de Identificador (Conservative Approach)
+        # Si la llave es nueva, pero el source_event_id ya existe, es AMBIGUO.
+        source_id = event.get("source_event_id")
+        if source_id:
+            for existing_evt in existing_events.values():
+                if existing_evt.get("source_event_id") == source_id:
+                    conflicts = self._find_conflicts(event, existing_evt)
+                    return IdentityMatch(
+                        decision=IdentityDecision.FLAG_AMBIGUOUS,
+                        matched_event_id=existing_evt.get("event_id"),
+                        match_score=0.5,
+                        conflicting_fields=conflicts,
+                        reason=f"Identity collision on source_event_id: {source_id}"
+                    )
         
-        # Found existing event with same key
-        existing_event = existing_events[idempotency_key]
-        existing_event_id = existing_event.get("event_id")
-        
-        # Compare critical fields
-        conflicts = self._find_conflicts(event, existing_event)
-        
-        if not conflicts:
-            # Exact match → REJECT_DUPLICATE
-            return IdentityMatch(
-                decision=IdentityDecision.REJECT_DUPLICATE,
-                matched_event_id=existing_event_id,
-                match_score=1.0,
-                reason=f"Exact duplicate of event {existing_event_id}"
-            )
-        else:
-            # Partial match → FLAG_AMBIGUOUS
-            return IdentityMatch(
-                decision=IdentityDecision.FLAG_AMBIGUOUS,
-                matched_event_id=existing_event_id,
-                match_score=0.5,
-                conflicting_fields=conflicts,
-                reason=f"Partial match with event {existing_event_id}: conflicting fields {conflicts}"
-            )
+        return IdentityMatch(
+            decision=IdentityDecision.ACCEPT,
+            reason="No existing event matches this identity"
+        )
     
     def _find_conflicts(
         self,
