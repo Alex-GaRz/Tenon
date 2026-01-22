@@ -1,0 +1,140 @@
+name: RFC-00 Guardrails
+
+on:
+  pull_request:
+    branches: [main, release/v1-tenon]
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: [main, release/v1-tenon]
+
+jobs:
+  validate-pr-template:
+    name: Validate PR Template
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check PR Template Fields
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          echo "🔍 Validating PR template completeness..."
+          echo ""
+          
+          # Check if PR body is empty
+          if [ -z "$PR_BODY" ]; then
+            echo "❌ FAIL: PR body is empty"
+            echo "PR template must be completed."
+            echo "See: .github/pull_request_template.md"
+            exit 1
+          fi
+          
+          # Check for required sections
+          MISSING=""
+          
+          if ! echo "$PR_BODY" | grep -q "## Descripción del Cambio"; then
+            MISSING="${MISSING}- Missing section: Descripción del Cambio\n"
+          fi
+          
+          if ! echo "$PR_BODY" | grep -q "## Referencia a RFC"; then
+            MISSING="${MISSING}- Missing section: Referencia a RFC\n"
+          fi
+          
+          if ! echo "$PR_BODY" | grep -q "## Rutas Tocadas"; then
+            MISSING="${MISSING}- Missing section: Rutas Tocadas\n"
+          fi
+          
+          if ! echo "$PR_BODY" | grep -q "## Impacto en Invariantes"; then
+            MISSING="${MISSING}- Missing section: Impacto en Invariantes\n"
+          fi
+          
+          if [ -n "$MISSING" ]; then
+            echo "❌ FAIL: PR template incomplete"
+            echo ""
+            echo -e "$MISSING"
+            echo ""
+            echo "Complete the PR template: .github/pull_request_template.md"
+            exit 1
+          fi
+          
+          echo "✅ PASS: PR template is complete"
+
+  validate-commit-messages:
+    name: Validate Commit Messages
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch base branch
+        if: github.event_name == 'pull_request'
+        run: git fetch origin ${{ github.base_ref }}
+      
+      - name: Run commit message validator
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # CORREGIDO: Rango dinámico seguro
+            COMMIT_RANGE="origin/${{ github.base_ref }}..HEAD"
+          else
+            COMMIT_RANGE="HEAD~1..HEAD"
+          fi
+          
+          python3 scripts/rfc00/validate_commit_messages.py --commits "$COMMIT_RANGE" --verbose
+
+  validate-repo-policies:
+    name: Validate Repository Policies
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Run repo policies validator
+        run: |
+          python3 scripts/rfc00/validate_repo_policies.py
+
+  validate-nogoals:
+    name: Validate NoGoals Policy
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Fetch base branch
+        if: github.event_name == 'pull_request'
+        run: git fetch origin ${{ github.base_ref }}
+      
+      - name: Run NoGoals validator
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # CORREGIDO: Rango dinámico seguro
+            DIFF_BASE="origin/${{ github.base_ref }}"
+          else
+            DIFF_BASE="HEAD~1"
+          fi
+          
+          python3 scripts/rfc00/validate_nogoals.py --diff "$DIFF_BASE" --verbose

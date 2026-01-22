@@ -1,0 +1,91 @@
+#!/bin/sh
+#
+# RFC-00 Pre-Commit Hook
+# 
+# Valida localmente antes de commit que:
+# - Commits siguen formato de Commit_Policy.md
+# - Cambios a rutas protegidas incluyen RFC reference
+#
+# Para instalar: ver scripts/hooks/install_hooks.md
+
+echo "🔍 RFC-00 pre-commit validation..."
+echo ""
+
+# Check if Python is available
+if ! command -v python3 &> /dev/null && ! command -v python &> /dev/null; then
+    echo "⚠️  WARNING: Python not found, skipping validation"
+    exit 0
+fi
+
+PYTHON_CMD="python3"
+if ! command -v python3 &> /dev/null; then
+    PYTHON_CMD="python"
+fi
+
+# Get repository root
+REPO_ROOT=$(git rev-parse --show-toplevel)
+
+# Validate commit message format (from staged commit msg if available)
+# Note: Full message validation happens in commit-msg hook
+# Here we just check staged files
+
+# Get staged files
+STAGED_FILES=$(git diff --cached --name-only)
+
+if [ -z "$STAGED_FILES" ]; then
+    echo "✅ No files staged"
+    exit 0
+fi
+
+# Check if protected paths are touched
+PROTECTED_TOUCHED=false
+for file in $STAGED_FILES; do
+    case "$file" in
+        core/*|contracts/*|docs/rfcs/RFC-00_MANIFEST.md)
+            PROTECTED_TOUCHED=true
+            break
+            ;;
+    esac
+done
+
+if [ "$PROTECTED_TOUCHED" = true ]; then
+    echo "⚠️  Protected paths touched (core/contracts/RFC-00)"
+    echo ""
+    echo "REMINDER: Your commit message MUST include:"
+    echo "  RFC-XX"
+    echo "  (in the footer)"
+    echo ""
+    echo "Example:"
+    echo "  feat(core): add new feature"
+    echo "  "
+    echo "  Implements something from RFC-04."
+    echo "  "
+    echo "  RFC-04"
+    echo ""
+    echo "See: docs/governance/Commit_Policy.md"
+    echo ""
+    
+    # Don't block commit, just warn
+    # Full validation happens in CI
+    echo "⚠️  Proceeding with commit (will be validated in CI)"
+fi
+
+# Run NoGoals validator on staged changes
+echo "Checking for NoGoals violations..."
+$PYTHON_CMD "$REPO_ROOT/scripts/rfc00/validate_nogoals.py" --diff HEAD 2>&1
+
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ Pre-commit validation failed"
+    echo ""
+    echo "To bypass this hook (not recommended):"
+    echo "  git commit --no-verify"
+    echo ""
+    exit 1
+fi
+
+echo ""
+echo "✅ Pre-commit validation passed"
+echo ""
+
+exit 0

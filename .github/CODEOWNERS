@@ -1,0 +1,75 @@
+# CODEOWNERS - Tenon Repository
+# 
+# Definición de ownership para rutas críticas según RFC-00 y Protected Paths Policy.
+# Ver: docs/governance/Protected_Paths_Policy.md
+#
+# Formato: <path pattern> @owner1 @owner2
+# Owners deben aprobar cambios antes de merge.
+
+# ============================================================================
+# RUTAS CONSTITUCIONALES (Máxima Protección)
+# ============================================================================
+
+# RFC-00 MANIFEST - Documento constitucional
+# Solo puede modificarse vía RFC-00A_* (Amendment Protocol)
+# Ver: docs/governance/RFC_Amendment_Policy.md
+/docs/rfcs/RFC-00_MANIFEST.md @Alex-GaRz @Alex-GaRz
+
+# Todos los RFCs (diseño del sistema)
+# Cambios requieren review institucional
+/docs/rfcs/** @Alex-GaRz
+
+# ============================================================================
+# CORE - Lógica de Invariantes
+# ============================================================================
+
+# Cualquier cambio a /core requiere:
+# - Referencia a RFC
+# - Impacto en invariantes documentado
+# - Aprobación de arquitectos
+# Ver: docs/governance/PR_Gate_RFC-00.md
+/core/** @Alex-GaRz @Alex-GaRz
+
+# ============================================================================
+# CONTRACTS - Contratos Canónicos
+# ============================================================================
+
+# Cualquier cambio a /contracts requiere:
+# - Versionado semántico
+# - Tests de compatibilidad
+# - Aprobación de arquitectos
+# Ver: docs/governance/Contracts_Versioning_Policy.md
+/contracts/** @Alex-GaRz @Alex-GaRz
+
+# ============================================================================
+# GOVERNANCE - Políticas y Control
+# ============================================================================
+
+# Cambios a políticas de gobernanza requieren consenso institucional
+/docs/governance/** @Alex-GaRz @Alex-GaRz
+
+# ============================================================================
+# CI/CD - Enforcement Automático
+# ============================================================================
+
+# Workflows de CI que enfuerzan invariantes
+# Cambios deben ser revisados para evitar bypasseo de controles
+/.github/workflows/** @Alex-GaRz @Alex-GaRz
+
+# Scripts de validación
+/scripts/rfc00/** @Alex-GaRz @Alex-GaRz
+
+# ============================================================================
+# ADAPTERS (Menor Protección)
+# ============================================================================
+
+# Adapters no tocan invariantes, pero requieren review por equipo correspondiente
+# Menos restrictivo que core/contracts
+/adapters/** @Alex-GaRz
+
+# ============================================================================
+# TESTS SYSTÉMICOS
+# ============================================================================
+
+# Tests que validan invariantes y reproducibilidad
+/tests_systemic/** @Alex-GaRz @Alex-GaRz

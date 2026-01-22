@@ -1,0 +1,64 @@
+name: Auto-Label PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [release/v1-tenon]
+
+jobs:
+  auto-label:
+    name: Auto-label PR based on files changed
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Detect changed paths and apply labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const prNumber = pr.number;
+
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner,
+              repo,
+              pull_number: prNumber,
+            });
+
+            const changedFiles = files.map(f => f.filename);
+            const labelsToAdd = new Set();
+
+            const protectedPaths = [
+              { path: 'core/', label: 'protected-paths' },
+              { path: 'core/', label: 'area/core' },
+              { path: 'core/', label: 'rfc-required' },
+              { path: 'contracts/', label: 'protected-paths' },
+              { path: 'contracts/', label: 'area/contracts' },
+              { path: 'contracts/', label: 'contracts-change' },
+              { path: 'contracts/', label: 'rfc-required' },
+              { path: 'docs/rfcs/RFC-00_MANIFEST.md', label: 'amendment' },
+              { path: 'adapters/', label: 'area/adapters' },
+              { path: 'docs/governance/', label: 'area/governance' },
+              { path: '.github/workflows/', label: 'area/ci' },
+              { path: 'scripts/rfc00/', label: 'area/ci' },
+            ];
+
+            for (const file of changedFiles) {
+              for (const { path, label } of protectedPaths) {
+                if (file.startsWith(path)) labelsToAdd.add(label);
+              }
+            }
+
+            const labels = Array.from(labelsToAdd);
+            if (labels.length === 0) return;
+
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: prNumber,
+              labels,
+            });
