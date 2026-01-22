@@ -115,21 +115,26 @@ class TestExternalReferenceCollision:
         # Depending on key derivation priority
         
         # If keys are same → ambiguous match
+        # ... (dentro de la función test_same_external_ref_same_source_different_amount_ambiguous)
+        
         if key1 == key2:
             existing_events = {key1: event1}
             match = self.decider.decide(key2, event2, existing_events)
-            
             assert match.decision == IdentityDecision.FLAG_AMBIGUOUS
             assert "amount" in match.conflicting_fields
         else:
-            # Different keys → both accepted (different events)
+            # CAMBIO AQUÍ: Aunque las llaves sean distintas, el source_event_id colisiona.
+            # La política conservadora exige FLAG_AMBIGUOUS.
             existing_events = {}
             match1 = self.decider.decide(key1, event1, existing_events)
             assert match1.decision == IdentityDecision.ACCEPT
-            
+
             existing_events[key1] = event1
             match2 = self.decider.decide(key2, event2, existing_events)
-            assert match2.decision == IdentityDecision.ACCEPT
+            
+            # Antes era ACCEPT, ahora debe ser FLAG_AMBIGUOUS por colisión de source_event_id
+            assert match2.decision == IdentityDecision.FLAG_AMBIGUOUS
+            assert match2.reason.startswith("Identity collision on source_event_id")
     
     def test_collision_does_not_overwrite_first_event(self):
         """
