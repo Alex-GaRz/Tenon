@@ -1,0 +1,164 @@
+name: Protected Paths
+
+on:
+  pull_request:
+    branches: [main, release/v1-tenon]
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'core/**'
+      - 'contracts/**'
+      - 'docs/rfcs/RFC-00_MANIFEST.md'
+  push:
+    branches: [main, release/v1-tenon]
+    paths:
+      - 'core/**'
+      - 'contracts/**'
+      - 'docs/rfcs/RFC-00_MANIFEST.md'
+
+jobs:
+  validate-protected-paths:
+    name: Validate Protected Paths Changes
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Fetch base branch
+        if: github.event_name == 'pull_request'
+        run: git fetch origin ${{ github.base_ref }}
+
+      - name: Run protected paths validator
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # CORREGIDO: Usamos referencia dinámica a la rama base
+            DIFF_BASE="origin/${{ github.base_ref }}"
+          else
+            DIFF_BASE="HEAD~1"
+          fi
+          
+          python3 scripts/rfc00/validate_protected_paths.py --diff "$DIFF_BASE" --verbose
+      
+      - name: Check for RFC-00 amendment
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "🔍 Checking if RFC-00_MANIFEST.md was modified..."
+          
+          # CORREGIDO: Comparación dinámica segura
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD)
+          
+          if echo "$CHANGED_FILES" | grep -q "docs/rfcs/RFC-00_MANIFEST.md"; then
+            echo "⚠️  RFC-00_MANIFEST.md was modified"
+            echo ""
+            
+            # Check if PR has amendment label
+            PR_LABELS="${{ join(github.event.pull_request.labels.*.name, ',') }}"
+            
+            if ! echo "$PR_LABELS" | grep -qi "amendment"; then
+              echo "❌ FAIL: RFC-00 modification without 'amendment' label"
+              echo ""
+              echo "RFC-00_MANIFEST.md is the constitutional document."
+              echo "Modifications require RFC-00A_* amendment protocol."
+              echo ""
+              echo "Required:"
+              echo "  1. Create RFC-00A_XXX.md with justification"
+              echo "  2. Add 'amendment' label to this PR"
+              echo "  3. Get 2+ CODEOWNERS approvals"
+              echo ""
+              echo "See: docs/governance/RFC_Amendment_Policy.md"
+              exit 1
+            fi
+            
+            # Check if RFC-00A_*.md exists
+            if ! echo "$CHANGED_FILES" | grep -q "docs/rfcs/RFC-00A_"; then
+              echo "❌ FAIL: RFC-00 amendment without RFC-00A_*.md"
+              echo ""
+              echo "Amendment protocol requires:"
+              echo "  - New file: docs/rfcs/RFC-00A_XXX.md"
+              echo "  - With justification and impact analysis"
+              echo ""
+              echo "See: docs/governance/RFC_Amendment_Policy.md"
+              exit 1
+            fi
+            
+            echo "✅ PASS: Amendment protocol appears to be followed"
+            echo "   (Manual review still required)"
+          else
+            echo "✅ RFC-00_MANIFEST.md not modified"
+          fi
+
+  validate-rfc-references:
+    name: Validate RFC References
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.base_ref }}
+      
+      - name: Check if protected paths are touched
+        id: check-protected
+        run: |
+          # CORREGIDO: Comparación dinámica segura
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD)
+          
+          if echo "$CHANGED_FILES" | grep -qE "^(core/|contracts/|docs/rfcs/RFC-00_MANIFEST.md)"; then
+            echo "protected=true" >> $GITHUB_OUTPUT
+            echo "⚠️  Protected paths detected"
+          else
+            echo "protected=false" >> $GITHUB_OUTPUT
+            echo "✅ No protected paths touched"
+          fi
+      
+      - name: Validate RFC reference in PR
+        if: steps.check-protected.outputs.protected == 'true'
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          echo "$PR_BODY" > /tmp/pr_body.txt
+          python3 scripts/rfc00/validate_rfc_references.py \
+            --pr-body-file /tmp/pr_body.txt \
+            --require-rfc
+
+  require-codeowners:
+    name: Require CODEOWNERS Approval
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Check CODEOWNERS file exists
+        uses: actions/checkout@v4
+      
+      - name: Verify CODEOWNERS
+        run: |
+          if [ ! -f ".github/CODEOWNERS" ]; then
+            echo "❌ FAIL: .github/CODEOWNERS file missing"
+            echo ""
+            echo "Protected paths require CODEOWNERS review."
+            echo "See: docs/governance/Protected_Paths_Policy.md"
+            exit 1
+          fi
+          
+          echo "✅ CODEOWNERS file present"
+          echo ""
+          echo "Note: GitHub branch protection rules must be configured to"
+          echo "      require CODEOWNERS approval for protected paths."
+          echo ""
+          echo "See: docs/governance/CI_Status_Checks.md"

@@ -1,0 +1,29 @@
+# <type>(<scope>): <subject> (max 72 chars)
+# |<----  Using a Maximum Of 72 Characters  ---->|
+
+# Body: Explain WHY (not what). Wrap at 72 chars.
+# |<----   Try To Limit Each Line to a Maximum Of 72 Characters   ---->|
+
+# Footer (if applicable):
+# RFC-XX (obligatorio si toca /core o /contracts)
+# Refs #issue
+# Closes #issue
+
+# --- Types ---
+# feat:     Nueva funcionalidad
+# fix:      Corrección de bug
+# refactor: Cambio sin alterar comportamiento
+# test:     Agregar/modificar tests
+# docs:     Documentación
+# chore:    Tooling/config
+# perf:     Mejora de performance
+#
+# --- Scopes (ejemplos) ---
+# core, contracts, adapters, governance, ci, rfc
+#
+# --- Rules ---
+# - Subject: imperativo, lowercase, sin punto final
+# - Body: opcional, explicar WHY
+# - Footer: RFC-XX obligatorio para /core y /contracts
+#
+# Ver: docs/governance/Commit_Policy.md
