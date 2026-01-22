@@ -168,17 +168,18 @@ def main() -> int:
     
     for commit in commits:
         sha_short = commit.sha[:7]
-        
-        # Validate format
+        # Ignorar commits automáticos de merge
+        if commit.subject.startswith("Merge "):
+            print(f"⏭️  Skipping merge commit: {commit.subject}")
+            continue
+        # Validar formato
         is_valid, error = commit.validate_format()
-        
         if not is_valid:
             all_valid = False
             errors.append(f"Commit {sha_short}: {error}")
             errors.append(f"  Subject: {commit.subject}")
             continue
-        
-        # Check RFC reference if touching protected paths
+        # Validar RFC reference si toca rutas protegidas
         files = get_files_in_commit(commit.sha)
         if touches_protected_paths(files):
             if not commit.has_rfc_reference():
@@ -187,7 +188,6 @@ def main() -> int:
                 errors.append(f"  Subject: {commit.subject}")
                 errors.append(f"  Touches protected paths: {[f for f in files if any(f.startswith(p) for p in PROTECTED_PATHS)]}")
                 continue
-        
         if args.verbose:
             print(f"✅ {sha_short}: {commit.subject}")
     
