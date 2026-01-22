@@ -21,7 +21,7 @@ Un RFC **NO se considera completado** si no existe:
 
 | RFC | Título | Estado | Rama / PR | Commit Hash | Evidencia de Tests | Notas de Compatibilidad |
 |----|------|--------|-----------|-------------|--------------------|-------------------------|
-| RFC-00 | Manifest & Governance | TODO | — | — | — | — |
+| RFC-00 | Manifest & Governance | PASS | #1 | <merge-commit-hash> | checks passed en PR #1 | Branch protection sin codeowners required (solo dev) |
 | RFC-01 | Canonical Event | TODO | — | — | — | — |
 | RFC-01A | Canonical IDs & Lineage | TODO | — | — | — | — |
 | RFC-02 | Ingest Append-Only | TODO | — | — | — | — |

@@ -8,7 +8,7 @@
 
 ## Estado General
 
-**RFC-00 STATUS: 🟡 IN PROGRESS**
+**RFC-00 STATUS: 🟢 PASS**
 
 El RFC-00 — MANIFEST define los invariantes, no-goals, threat model y contratos institucionales del sistema Tenon.
 
@@ -99,10 +99,10 @@ El RFC-00 solo puede marcarse como **PASS** cuando:
 | 5. Workflows `.github/workflows/rfc00-guardrails.yml` y `protected-paths.yml` existen | ✅ | — |
 | 6. `.github/CODEOWNERS` existe cubriendo `/core/**`, `/contracts/**`, `docs/rfcs/**` | ✅ | — |
 | 7. `docs/governance/CI_Status_Checks.md` lista checks required | ✅ | — |
-| 8. Branch protection en GitHub settings configurado con required checks | 🟡 | Configuración manual requerida (ver BRANCH_PROTECTION_SETUP.md) |
+| 8. Branch protection en GitHub settings configurado con required checks | 🟢 | Branch protection habilitado (sin Code Owners required, repo single-dev) |
 
-**Gates cumplidos:** 7 / 8  
-**RFC-00 STATUS:** 🟡 **READY FOR CONFIGURATION** (workflows creados, configuración manual pendiente)
+**Gates cumplidos:** 8 / 8  
+**RFC-00 STATUS:** 🟢 **PASS** (branch protection habilitado, repo single-dev)
 
 ---
 
