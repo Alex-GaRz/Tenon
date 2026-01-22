@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.canonical/schemas/canonical_ids/v1.0.0/LineageLink.schema.json",
+  "title": "LineageLink",
+  "description": "Explicit lineage link between canonical events (RFC-01A)",
+  "type": "object",
+  "required": ["type", "target_event_id", "evidence", "version"],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Type of lineage relationship",
+      "enum": [
+        "DERIVES_FROM",
+        "REVERSAL_OF",
+        "REFUND_OF",
+        "ADJUSTMENT_OF",
+        "RELATED_TO"
+      ]
+    },
+    "target_event_id": {
+      "type": "string",
+      "description": "Canonical event_id of the target event"
+    },
+    "evidence": {
+      "type": "string",
+      "description": "Evidence or reason for this lineage link (mandatory)"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version of lineage validator that created this link",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    }
+  }
+}

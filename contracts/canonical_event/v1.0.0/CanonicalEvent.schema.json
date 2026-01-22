@@ -1,0 +1,167 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.canonical/schemas/canonical_event/v1.0.0/CanonicalEvent.schema.json",
+  "title": "CanonicalEvent",
+  "description": "Canonical representation of a financial event (RFC-01 + RFC-01A)",
+  "type": "object",
+  "required": [
+    "event_id",
+    "source_system",
+    "source_connector",
+    "source_environment",
+    "observed_at",
+    "event_type",
+    "direction",
+    "amount",
+    "currency",
+    "raw_payload_hash",
+    "raw_pointer",
+    "raw_format",
+    "normalizer_version",
+    "adapter_version",
+    "schema_version",
+    "idempotency_key",
+    "idempotency_decision"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "Unique canonical identifier for this event"
+    },
+    "source_event_id": {
+      "type": "string",
+      "description": "Original event identifier from source system (optional)"
+    },
+    "external_reference": {
+      "type": "string",
+      "description": "External reference (e.g., transaction ID, invoice number)"
+    },
+    "correlation_id": {
+      "type": "string",
+      "description": "Correlation identifier for related events"
+    },
+    "lineage_links": {
+      "type": "array",
+      "description": "Explicit lineage links to other canonical events",
+      "items": {
+        "$ref": "../../../canonical_ids/v1.0.0/LineageLink.schema.json"
+      },
+      "default": []
+    },
+    "source_system": {
+      "type": "string",
+      "description": "Closed enum of known source systems",
+      "enum": [
+        "BANK",
+        "ERP",
+        "PSP",
+        "MARKETPLACE",
+        "INTERNAL_LEDGER",
+        "OTHER"
+      ]
+    },
+    "source_connector": {
+      "type": "string",
+      "description": "Connector/adapter identifier"
+    },
+    "source_environment": {
+      "type": "string",
+      "description": "Environment of the source system",
+      "enum": ["PROD", "SANDBOX", "UNKNOWN"]
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the event was observed (ISO 8601)"
+    },
+    "source_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Original timestamp from source system (ISO 8601)"
+    },
+    "ingested_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the event was ingested (ISO 8601)"
+    },
+    "event_type": {
+      "type": "string",
+      "description": "Closed ontology of event types",
+      "enum": [
+        "PAYMENT_INITIATED",
+        "PAYMENT_AUTHORIZED",
+        "PAYMENT_CAPTURED",
+        "PAYMENT_SETTLED",
+        "PAYOUT_INITIATED",
+        "PAYOUT_SETTLED",
+        "REFUND_INITIATED",
+        "REFUND_SETTLED",
+        "CHARGEBACK_OPENED",
+        "CHARGEBACK_WON",
+        "CHARGEBACK_LOST",
+        "FEE_ASSESSED",
+        "ADJUSTMENT_POSTED",
+        "REVERSAL_POSTED",
+        "BALANCE_SNAPSHOT",
+        "UNKNOWN"
+      ]
+    },
+    "direction": {
+      "type": "string",
+      "description": "Direction of money flow",
+      "enum": ["IN", "OUT", "NEUTRAL", "UNKNOWN"]
+    },
+    "amount": {
+      "type": "number",
+      "description": "Amount (positive value, direction determines flow)"
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code or UNKNOWN"
+    },
+    "status_hint": {
+      "type": "string",
+      "description": "Optional status hint from source system"
+    },
+    "counterparty_hint": {
+      "type": "string",
+      "description": "Optional counterparty identifier hint"
+    },
+    "raw_payload_hash": {
+      "type": "string",
+      "description": "Hash of the raw payload for integrity verification"
+    },
+    "raw_pointer": {
+      "type": "string",
+      "description": "Pointer to raw payload storage location"
+    },
+    "raw_format": {
+      "type": "string",
+      "description": "Format of the raw payload",
+      "enum": ["JSON", "CSV", "XML", "PDF", "OTHER"]
+    },
+    "normalizer_version": {
+      "type": "string",
+      "description": "Version of the normalization logic applied"
+    },
+    "adapter_version": {
+      "type": "string",
+      "description": "Version of the adapter that processed this event"
+    },
+    "schema_version": {
+      "type": "string",
+      "description": "Version of this schema (semver)",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "description": "Deterministic idempotency key derived from event fields"
+    },
+    "idempotency_decision": {
+      "type": "string",
+      "description": "Explicit identity decision (RFC-01A)",
+      "enum": ["ACCEPT", "REJECT_DUPLICATE", "FLAG_AMBIGUOUS"]
+    }
+  }
+}
