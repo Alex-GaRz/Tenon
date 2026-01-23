@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.dev/contracts/idempotency_guardian/v1/idempotency_record.schema.json",
+  "title": "IdempotencyRecord",
+  "description": "Append-only record of idempotency decision (RFC-10 v1)",
+  "type": "object",
+  "required": [
+    "idempotency_record_id",
+    "idempotency_key",
+    "scope",
+    "decision",
+    "first_seen_at",
+    "decided_at",
+    "evidence_refs",
+    "rule_version"
+  ],
+  "properties": {
+    "idempotency_record_id": {
+      "type": "string",
+      "description": "Unique identifier for this record"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "description": "The idempotency key that was evaluated"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "INGEST",
+        "CANONICALIZE",
+        "EVIDENCE_WRITE",
+        "CORRELATE",
+        "STATE_EVAL",
+        "DISCREPANCY_EVAL"
+      ],
+      "description": "Scope of this decision"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "ACCEPT_FIRST",
+        "REJECT_DUPLICATE",
+        "FLAG_AMBIGUOUS"
+      ],
+      "description": "Idempotency decision"
+    },
+    "first_seen_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of first observation"
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of decision"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "References to WORM ledger entries"
+    },
+    "rule_version": {
+      "type": "string",
+      "description": "Version of decision rules applied"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes about decision"
+    }
+  },
+  "additionalProperties": false
+}
