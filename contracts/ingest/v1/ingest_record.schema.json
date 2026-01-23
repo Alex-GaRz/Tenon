@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.dev/schemas/ingest/v1/ingest_record.schema.json",
+  "title": "IngestRecord",
+  "description": "RFC-02 Ingest Append-Only: Immutable record of raw observation ingestion",
+  "type": "object",
+  "required": [
+    "ingest_id",
+    "event_id",
+    "idempotency_decision",
+    "source_system",
+    "source_connector",
+    "source_environment",
+    "observed_at",
+    "ingested_at",
+    "source_timestamp",
+    "raw_payload_hash",
+    "raw_pointer",
+    "raw_format",
+    "raw_size_bytes",
+    "ingest_protocol_version",
+    "adapter_version",
+    "status",
+    "warnings"
+  ],
+  "properties": {
+    "ingest_id": {
+      "type": "string",
+      "description": "Unique identifier for this ingest record"
+    },
+    "event_id": {
+      "type": ["string", "null"],
+      "description": "Canonical event ID if materialized, null otherwise"
+    },
+    "idempotency_decision": {
+      "type": "string",
+      "enum": ["ACCEPT", "REJECT_DUPLICATE", "FLAG_AMBIGUOUS"],
+      "description": "Result of idempotency evaluation via RFC-01A"
+    },
+    "source_system": {
+      "type": "string",
+      "description": "Originating system identifier"
+    },
+    "source_connector": {
+      "type": "string",
+      "description": "Connector/adapter identifier"
+    },
+    "source_environment": {
+      "type": "string",
+      "description": "Source environment (prod/staging/dev)"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC3339 timestamp when observation was captured"
+    },
+    "ingested_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC3339 timestamp when ingestion occurred"
+    },
+    "source_timestamp": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "RFC3339 timestamp from source system, null if unavailable"
+    },
+    "raw_payload_hash": {
+      "type": "string",
+      "description": "SHA-256 hash of raw payload bytes"
+    },
+    "raw_pointer": {
+      "type": "string",
+      "description": "Opaque stable pointer to raw payload in store"
+    },
+    "raw_format": {
+      "type": "string",
+      "description": "Format of raw payload (json/csv/pdf/etc)"
+    },
+    "raw_size_bytes": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Size of raw payload in bytes"
+    },
+    "ingest_protocol_version": {
+      "type": "string",
+      "description": "Version of ingest protocol"
+    },
+    "adapter_version": {
+      "type": "string",
+      "description": "Version of adapter that produced observation"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["RECORDED", "RECORDED_WITH_WARNINGS"],
+      "description": "Status of ingest record"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Warnings encountered during ingestion"
+    }
+  },
+  "additionalProperties": false
+}

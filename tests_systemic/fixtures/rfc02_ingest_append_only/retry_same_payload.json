@@ -1,0 +1,17 @@
+{
+  "scenario": "retry_same_payload",
+  "description": "Adapter retries same payload multiple times (network glitch, timeout, etc)",
+  "payload": {
+    "source_event_id": "evt_retry_001",
+    "amount": 500,
+    "currency": "USD",
+    "direction": "DEBIT"
+  },
+  "retry_count": 3,
+  "expected_outcome": {
+    "first_ingest_decision": "ACCEPT",
+    "subsequent_ingest_decisions": "REJECT_DUPLICATE",
+    "total_ingest_records": 3,
+    "unique_raw_payloads": 1
+  }
+}

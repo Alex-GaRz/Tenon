@@ -1,0 +1,48 @@
+{
+  "scenario": "version_change_new_events_use_new_rule",
+  "description": "Rule version upgrade: new events use new rule, old events unchanged",
+  "old_rule": {
+    "rule_id": "rule_v1",
+    "rule_version": "1.0.0",
+    "normalizer_version": "1.0.0",
+    "input_signature": {
+      "source_system": "bank_versioned",
+      "raw_format": "json",
+      "schema_hint": "v1"
+    },
+    "mapping": [
+      {"raw_path": "amount", "canonical_path": "amount"}
+    ],
+    "lossy_fields": [],
+    "warnings": []
+  },
+  "new_rule": {
+    "rule_id": "rule_v2",
+    "rule_version": "2.0.0",
+    "normalizer_version": "1.0.0",
+    "input_signature": {
+      "source_system": "bank_versioned",
+      "raw_format": "json",
+      "schema_hint": "v2"
+    },
+    "mapping": [
+      {"raw_path": "amount", "canonical_path": "amount"},
+      {"raw_path": "currency", "canonical_path": "currency"}
+    ],
+    "lossy_fields": [],
+    "warnings": []
+  },
+  "old_event": {
+    "payload": {"amount": 100},
+    "schema_hint": "v1"
+  },
+  "new_event": {
+    "payload": {"amount": 200, "currency": "GBP"},
+    "schema_hint": "v2"
+  },
+  "expected_outcome": {
+    "old_canonical": {"amount": 100},
+    "new_canonical": {"amount": 200, "currency": "GBP"},
+    "isolation": "old events unaffected by new rule"
+  }
+}

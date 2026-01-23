@@ -1,0 +1,43 @@
+{
+  "scenario": "old_events_unchanged",
+  "description": "After rule update, re-normalizing old events with old schema_hint yields unchanged result",
+  "rule_v1": {
+    "rule_id": "rule_stability",
+    "rule_version": "1.0.0",
+    "normalizer_version": "1.0.0",
+    "input_signature": {
+      "source_system": "bank_stable",
+      "raw_format": "json",
+      "schema_hint": "v1"
+    },
+    "mapping": [
+      {"raw_path": "field_a", "canonical_path": "field_a"}
+    ],
+    "lossy_fields": [],
+    "warnings": []
+  },
+  "rule_v2": {
+    "rule_id": "rule_stability",
+    "rule_version": "2.0.0",
+    "normalizer_version": "1.0.0",
+    "input_signature": {
+      "source_system": "bank_stable",
+      "raw_format": "json",
+      "schema_hint": "v2"
+    },
+    "mapping": [
+      {"raw_path": "field_b", "canonical_path": "field_b"}
+    ],
+    "lossy_fields": [],
+    "warnings": []
+  },
+  "event_v1": {
+    "payload": {"field_a": "value_a"},
+    "schema_hint": "v1"
+  },
+  "expected_outcome": {
+    "canonical_before_update": {"field_a": "value_a"},
+    "canonical_after_update": {"field_a": "value_a"},
+    "stability": "old events unchanged after rule update"
+  }
+}
