@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.dev/schemas/normalization/v1/normalization_result.schema.json",
+  "title": "NormalizationResult",
+  "description": "RFC-03 Normalization Result: Outcome of normalization process",
+  "type": "object",
+  "required": [
+    "event_id",
+    "normalizer_version",
+    "applied_rules",
+    "warnings",
+    "diff_reference"
+  ],
+  "properties": {
+    "event_id": {
+      "type": ["string", "null"],
+      "description": "Canonical event ID if materialized, null if normalization failed"
+    },
+    "normalizer_version": {
+      "type": "string",
+      "description": "Version of normalization engine"
+    },
+    "applied_rules": {
+      "type": "array",
+      "description": "Rules applied during normalization",
+      "items": {
+        "type": "object",
+        "required": ["rule_id", "rule_version", "normalizer_version"],
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "rule_version": {
+            "type": "string"
+          },
+          "normalizer_version": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Warnings encountered during normalization"
+    },
+    "diff_reference": {
+      "type": "string",
+      "description": "Opaque reference to diff document in diff store"
+    }
+  },
+  "additionalProperties": false
+}

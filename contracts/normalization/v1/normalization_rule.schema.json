@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.dev/schemas/normalization/v1/normalization_rule.schema.json",
+  "title": "NormalizationRule",
+  "description": "RFC-03 Normalization Rule: Deterministic mapping from raw to canonical",
+  "type": "object",
+  "required": [
+    "rule_id",
+    "rule_version",
+    "normalizer_version",
+    "input_signature",
+    "mapping",
+    "lossy_fields",
+    "warnings"
+  ],
+  "properties": {
+    "rule_id": {
+      "type": "string",
+      "description": "Unique identifier for this normalization rule"
+    },
+    "rule_version": {
+      "type": "string",
+      "description": "Version of this specific rule"
+    },
+    "normalizer_version": {
+      "type": "string",
+      "description": "Version of normalization engine"
+    },
+    "input_signature": {
+      "type": "object",
+      "required": ["source_system", "raw_format", "schema_hint"],
+      "properties": {
+        "source_system": {
+          "type": "string",
+          "description": "Source system identifier"
+        },
+        "raw_format": {
+          "type": "string",
+          "description": "Raw format (json/csv/pdf/etc)"
+        },
+        "schema_hint": {
+          "type": "string",
+          "description": "Schema version or type hint"
+        }
+      },
+      "additionalProperties": false
+    },
+    "mapping": {
+      "type": "array",
+      "description": "Field mappings from raw to canonical",
+      "items": {
+        "type": "object",
+        "required": ["raw_path", "canonical_path"],
+        "properties": {
+          "raw_path": {
+            "type": "string",
+            "description": "JSONPath or field path in raw payload"
+          },
+          "canonical_path": {
+            "type": "string",
+            "description": "Field path in canonical event"
+          }
+        }
+      }
+    },
+    "lossy_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Fields discarded during normalization"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Warnings associated with this rule"
+    }
+  },
+  "additionalProperties": false
+}

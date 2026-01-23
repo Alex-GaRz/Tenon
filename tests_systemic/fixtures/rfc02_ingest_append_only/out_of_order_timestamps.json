@@ -1,0 +1,29 @@
+{
+  "scenario": "out_of_order_timestamps",
+  "description": "Events arrive out of chronological order (backfill, delayed delivery, etc)",
+  "events": [
+    {
+      "source_event_id": "evt_003",
+      "observed_at": "2026-01-01T15:00:00Z",
+      "source_timestamp": "2026-01-01T15:00:00Z",
+      "amount": 300
+    },
+    {
+      "source_event_id": "evt_001",
+      "observed_at": "2026-01-01T10:00:00Z",
+      "source_timestamp": "2026-01-01T10:00:00Z",
+      "amount": 100
+    },
+    {
+      "source_event_id": "evt_002",
+      "observed_at": "2026-01-01T12:00:00Z",
+      "source_timestamp": "2026-01-01T12:00:00Z",
+      "amount": 200
+    }
+  ],
+  "expected_outcome": {
+    "all_decisions": "ACCEPT",
+    "total_ingest_records": 3,
+    "temporal_independence": "timestamps do not affect idempotency"
+  }
+}

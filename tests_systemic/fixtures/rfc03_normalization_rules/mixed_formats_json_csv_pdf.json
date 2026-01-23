@@ -1,0 +1,54 @@
+{
+  "scenario": "mixed_formats_json_csv_pdf",
+  "description": "Different raw formats require format-specific normalization rules",
+  "rules": [
+    {
+      "rule_id": "rule_json",
+      "rule_version": "1.0.0",
+      "normalizer_version": "1.0.0",
+      "input_signature": {
+        "source_system": "multi_format",
+        "raw_format": "json",
+        "schema_hint": "default"
+      },
+      "mapping": [
+        {"raw_path": "json_field", "canonical_path": "data"}
+      ],
+      "lossy_fields": [],
+      "warnings": []
+    },
+    {
+      "rule_id": "rule_csv",
+      "rule_version": "1.0.0",
+      "normalizer_version": "1.0.0",
+      "input_signature": {
+        "source_system": "multi_format",
+        "raw_format": "csv",
+        "schema_hint": "default"
+      },
+      "mapping": [
+        {"raw_path": "column_1", "canonical_path": "data"}
+      ],
+      "lossy_fields": [],
+      "warnings": ["CSV parsing not implemented"]
+    }
+  ],
+  "payloads": [
+    {
+      "format": "json",
+      "content": "{\"json_field\": \"json_value\"}",
+      "expected_canonical": {"data": "json_value"}
+    },
+    {
+      "format": "csv",
+      "content": "column_1,column_2\nvalue_1,value_2",
+      "expected_canonical": null,
+      "expected_warning": "No normalization rule or unsupported format"
+    }
+  ],
+  "expected_outcome": {
+    "json_success": true,
+    "csv_failure": "graceful (no rule or parser)",
+    "pdf_failure": "graceful (no rule or parser)"
+  }
+}

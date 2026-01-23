@@ -1,0 +1,14 @@
+{
+  "scenario": "partial_adapter_failure_recovery",
+  "description": "Adapter crashes mid-batch, resumes with full batch re-attempt",
+  "batch_size": 20,
+  "failure_point": 12,
+  "recovery_strategy": "re-attempt entire batch (includes duplicates 0-11)",
+  "expected_outcome": {
+    "first_attempt_records": 12,
+    "recovery_attempt_records": 20,
+    "total_ingest_records": 32,
+    "unique_raw_payloads": 20,
+    "duplicate_decisions": "events 0-11 marked REJECT_DUPLICATE on recovery"
+  }
+}

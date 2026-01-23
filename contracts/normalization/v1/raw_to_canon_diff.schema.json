@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.dev/schemas/normalization/v1/raw_to_canon_diff.schema.json",
+  "title": "RawToCanonDiff",
+  "description": "RFC-03 Diff Document: Traceable mapping from raw to canonical",
+  "type": "object",
+  "required": [
+    "raw_pointer",
+    "applied_rule",
+    "mappings_applied",
+    "warnings"
+  ],
+  "properties": {
+    "raw_pointer": {
+      "type": "string",
+      "description": "Pointer to raw payload in raw store"
+    },
+    "applied_rule": {
+      "type": "object",
+      "required": ["rule_id", "rule_version", "normalizer_version"],
+      "properties": {
+        "rule_id": {
+          "type": "string"
+        },
+        "rule_version": {
+          "type": "string"
+        },
+        "normalizer_version": {
+          "type": "string"
+        }
+      }
+    },
+    "mappings_applied": {
+      "type": "array",
+      "description": "Field mappings applied",
+      "items": {
+        "type": "object",
+        "required": ["raw_path", "canonical_path"],
+        "properties": {
+          "raw_path": {
+            "type": "string"
+          },
+          "canonical_path": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Warnings during diff generation"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,30 @@
+{
+  "scenario": "corrupt_raw_payload",
+  "description": "Corrupt or unparseable raw payload fails normalization gracefully",
+  "rule": {
+    "rule_id": "rule_corrupt",
+    "rule_version": "1.0.0",
+    "normalizer_version": "1.0.0",
+    "input_signature": {
+      "source_system": "bank_corrupt",
+      "raw_format": "json",
+      "schema_hint": "default"
+    },
+    "mapping": [
+      {"raw_path": "data", "canonical_path": "data"}
+    ],
+    "lossy_fields": [],
+    "warnings": []
+  },
+  "corrupt_payloads": [
+    "{ not valid json }",
+    "incomplete json {",
+    ""
+  ],
+  "expected_outcome": {
+    "canonical_event": null,
+    "warnings": ["Failed to parse raw payload"],
+    "diff_reference": "present (even for failure)",
+    "graceful_failure": true
+  }
+}

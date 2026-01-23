@@ -1,0 +1,16 @@
+{
+  "scenario": "historical_backfill_months",
+  "description": "Backfill months of historical data from legacy system",
+  "months": 3,
+  "events_per_month": 10,
+  "date_range": {
+    "start": "2025-10-01T00:00:00Z",
+    "end": "2025-12-31T23:59:59Z"
+  },
+  "expected_outcome": {
+    "total_events": 30,
+    "all_unique": true,
+    "monotonic_growth": "ingest_record count increases monotonically",
+    "append_only": "no updates or deletes"
+  }
+}
