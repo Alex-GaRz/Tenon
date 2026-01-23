@@ -1,16 +1,80 @@
 name: ci-core
+
 on:
   pull_request:
     paths:
       - "core/**"
+      - "tests/**"
+      - "tests_systemic/**"
       - ".github/workflows/ci-core.yml"
+  push:
+    branches: [main, release/v1-tenon]
+    paths:
+      - "core/**"
+      - "tests/**"
+      - "tests_systemic/**"
+      - ".github/workflows/ci-core.yml"
+
 jobs:
-  core_checks:
+  core_tests:
+    name: Run Core & Systemic Tests
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      - name: Etapa 0 guard (core must be README only)
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest jsonschema hypothesis
+
+      - name: Run Tests
+        env:
+          PYTHONPATH: .
         run: |
           set -e
-          files=$(find core -type f | wc -l | tr -d ' ')
-          test "$files" -eq 1
+          TEST_PATHS=""
+          
+          if [ -d "tests" ]; then
+            TEST_PATHS="$TEST_PATHS tests"
+          fi
+          
+          if [ -d "tests_systemic" ]; then
+            TEST_PATHS="$TEST_PATHS tests_systemic"
+          fi
+          
+          if [ -z "$TEST_PATHS" ]; then
+            echo "No test directories found (tests/ or tests_systemic/)"
+            
+            # Calculate changed files based on event type
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }})
+            else
+              CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}...${{ github.sha }})
+            fi
+            
+            # Check if core/tests paths were modified
+            if echo "$CHANGED_FILES" | grep -qE '^(core/|tests/|tests_systemic/)'; then
+              echo "ERROR: core/ or tests/ paths were modified but no test directories exist"
+              exit 1
+            else
+              echo "No test dirs and no relevant changes; skipping"
+              exit 0
+            fi
+          fi
+          
+          echo "Running pytest on:$TEST_PATHS"
+          pytest -v $TEST_PATHS || {
+            code=$?
+            if [ $code -eq 5 ]; then
+              echo "No tests collected (exit 5) — treating as success for this run."
+              exit 0
+            fi
+            exit $code
+          }
