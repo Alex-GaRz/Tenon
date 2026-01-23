@@ -17,6 +17,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Debug PR Template File
+        run: |
+          ls -la .github
+          echo "---- TEMPLATE (raw) ----"
+          sed -n '1,120p' .github/pull_request_template.md || true
+          echo "---- TEMPLATE (hex dump first 200 bytes) ----"
+          python - <<'PY'
+          p = ".github/pull_request_template.md"
+          import os, binascii
+          print("exists:", os.path.exists(p))
+          if os.path.exists(p):
+              data = open(p, "rb").read(200)
+              print(binascii.hexlify(data).decode())
+          PY
+      
       - name: Check PR Template Fields
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
