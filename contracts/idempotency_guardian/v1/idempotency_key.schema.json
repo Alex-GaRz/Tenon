@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.dev/contracts/idempotency_guardian/v1/idempotency_key.schema.json",
+  "title": "IdempotencyKey",
+  "description": "Deterministic key for idempotency decision (RFC-10 v1)",
+  "type": "object",
+  "required": [
+    "key",
+    "scope",
+    "principal",
+    "subject",
+    "payload_hash",
+    "version"
+  ],
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Deterministic idempotency key"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "INGEST",
+        "CANONICALIZE",
+        "EVIDENCE_WRITE",
+        "CORRELATE",
+        "STATE_EVAL",
+        "DISCREPANCY_EVAL"
+      ],
+      "description": "Scope of idempotency check"
+    },
+    "principal": {
+      "type": "string",
+      "description": "Identity initiating the operation"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Entity being operated upon"
+    },
+    "payload_hash": {
+      "type": "string",
+      "description": "Deterministic hash of payload"
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema version",
+      "const": "1.0.0"
+    }
+  },
+  "additionalProperties": false
+}
