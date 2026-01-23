@@ -34,7 +34,7 @@ Un RFC **NO se considera completado** si no existe:
 | RFC-09 | Immutable Ledger (WORM) | TODO | — | — | — | — |
 | RFC-10 | Idempotency Guardian | TODO | — | — | — | — |
 | RFC-11 | Adapter Contracts | TODO | — | — | — | — |
-| RFC-12 | Change Control | TODO | — | — | — | — |
+| RFC-12 | Change Control | PASS | PR #4 → release/v1-tenon | <b175f32> | pytest tests_systemic/ -k rfc12 (7 passed) | Append-only. Nuevo contrato v1. Sin impacto en contratos existentes |
 | RFC-13 | Risk Observability | TODO | — | — | — | — |
 
 ---
