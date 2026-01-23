@@ -1,0 +1,67 @@
+{
+  "scenario": "upgrade_history",
+  "description": "Simulates a version upgrade mid-stream with historical and new events",
+  "setup": {
+    "component": "canonical_event",
+    "versions": [
+      {
+        "version": "v1.0.0",
+        "effective_at": "2026-01-01T00:00:00Z",
+        "description": "Initial canonical event schema"
+      },
+      {
+        "version": "v2.0.0",
+        "effective_at": "2026-02-01T00:00:00Z",
+        "description": "Enhanced schema with metadata"
+      }
+    ],
+    "change_declaration": {
+      "rfc_id": "RFC-12",
+      "change_type": "Minor",
+      "compatibility": "backward-compatible",
+      "effective_at": "2026-02-01T00:00:00Z",
+      "components_impacted": ["canonical_event"],
+      "versions_affected": [
+        {
+          "component": "canonical_event",
+          "from_version": "v1.0.0",
+          "to_version": "v2.0.0"
+        }
+      ],
+      "description": "Add optional metadata field to canonical event"
+    }
+  },
+  "test_events": [
+    {
+      "timestamp": "2026-01-15T10:00:00Z",
+      "description": "Event before upgrade",
+      "expected_version": "v1.0.0",
+      "replay_determinism": "must always resolve to v1.0.0"
+    },
+    {
+      "timestamp": "2026-01-31T23:59:59Z",
+      "description": "Event just before cutover",
+      "expected_version": "v1.0.0",
+      "replay_determinism": "must always resolve to v1.0.0"
+    },
+    {
+      "timestamp": "2026-02-01T00:00:00Z",
+      "description": "Event exactly at cutover",
+      "expected_version": "v2.0.0",
+      "replay_determinism": "must always resolve to v2.0.0"
+    },
+    {
+      "timestamp": "2026-02-15T10:00:00Z",
+      "description": "Event after upgrade",
+      "expected_version": "v2.0.0",
+      "replay_determinism": "must always resolve to v2.0.0"
+    }
+  ],
+  "assertions": [
+    "All pre-upgrade events use v1.0.0",
+    "All post-upgrade events use v2.0.0",
+    "Replay produces identical version selections",
+    "No retroactive mutation of historical decisions",
+    "Both versions coexist without conflict"
+  ]
+}

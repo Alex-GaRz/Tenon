@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ChangeEvent",
+  "type": "object",
+  "required": [
+    "rfc_id",
+    "effective_at",
+    "components_impacted",
+    "versions_affected",
+    "change_type",
+    "compatibility"
+  ],
+  "properties": {
+    "rfc_id": {
+      "type": "string"
+    },
+    "effective_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "components_impacted": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "versions_affected": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["component", "from_version", "to_version"],
+        "properties": {
+          "component": {
+            "type": "string"
+          },
+          "from_version": {
+            "type": "string"
+          },
+          "to_version": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "change_type": {
+      "type": "string",
+      "enum": ["Patch", "Minor", "Major"]
+    },
+    "compatibility": {
+      "type": "string",
+      "enum": ["backward-compatible", "forward-compatible", "breaking"]
+    }
+  }
+}
