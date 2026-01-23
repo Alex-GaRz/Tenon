@@ -1,6 +1,6 @@
 # TENON — RFC EXECUTION STATUS
 > Documento vivo de gobernanza institucional  
-> Última actualización: YYYY-MM-DD
+> Última actualización: 2026-01-22
 
 Este documento registra el estado **ejecutable y verificable** de cada RFC del sistema TENON.
 Un RFC **NO se considera completado** si no existe:
@@ -21,9 +21,9 @@ Un RFC **NO se considera completado** si no existe:
 
 | RFC | Título | Estado | Rama / PR | Commit Hash | Evidencia de Tests | Notas de Compatibilidad |
 |----|------|--------|-----------|-------------|--------------------|-------------------------|
-| RFC-00 | Manifest & Governance | PASS | #1 | <merge-commit-hash> | checks passed en PR #1 | Branch protection sin codeowners required (solo dev) |
-| RFC-01 | Canonical Event | TODO | — | — | — | — |
-| RFC-01A | Canonical IDs & Lineage | TODO | — | — | — | — |
+| RFC-00 | Manifest & Governance | PASS | #1 | <82d40f8> | checks passed en PR #1 | Branch protection sin codeowners required (solo dev) |
+| RFC-01 | Canonical Event | PASS | PR #2 → release/v1-tenon | <7341144> | ci-core + systemic replay OK | Compatible con contracts v1.0.0 |
+| RFC-01A | Canonical IDs & Lineage | PASS | PR #2 → release/v1-tenon | <7341144> | identity + lineage tests OK | No breaking changes |
 | RFC-02 | Ingest Append-Only | TODO | — | — | — | — |
 | RFC-03 | Normalization Rules | TODO | — | — | — | — |
 | RFC-04 | Correlation Engine | TODO | — | — | — | — |
