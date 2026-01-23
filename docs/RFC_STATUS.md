@@ -32,7 +32,7 @@ Un RFC **NO se considera completado** si no existe:
 | RFC-07 | Causality Model | TODO | — | — | — | — |
 | RFC-08 | Evidence Events | TODO | — | — | — | — |
 | RFC-09 | Immutable Ledger (WORM) | TODO | — | — | — | — |
-| RFC-10 | Idempotency Guardian | TODO | — | — | — | — |
+| RFC-10 | Idempotency Guardian | PASS | PR #5 → release/v1-tenon | <67b08a1> | python -m pytest tests_systemic\rfc10_idempotency_guardian -v (40 passed) | Contracts idempotency_guardian v1 (append-only; decisiones explícitas) |
 | RFC-11 | Adapter Contracts | TODO | — | — | — | — |
 | RFC-12 | Change Control | PASS | PR #4 → release/v1-tenon | <b175f32> | pytest tests_systemic/ -k rfc12 (7 passed) | Append-only. Nuevo contrato v1. Sin impacto en contratos existentes |
 | RFC-13 | Risk Observability | TODO | — | — | — | — |
