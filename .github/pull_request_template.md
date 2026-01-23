@@ -7,24 +7,13 @@
 - [ ] Contracts
 - [ ] Core
 
-## Descripción del Cambio (máx 5 líneas)
-Indicar explícitamente si toca /core y/o /contracts.
+## Descripción del Cambio
+(Qué cambió y por qué. Máx 5 líneas.)
 
-## Rutas tocadas
-- docs/**
-- contracts/**
-- core/**
-- tests/**
-- .github/**
-- scripts/**
+## Rutas Tocadas
+- (ej. core/**, contracts/**, tests/**, .github/**)
 
 ## Impacto en Invariantes
 - [ ] Cambios en /core (requiere RFC/enmienda + versionado + tests)
 - [ ] Cambios en /contracts (requiere versionado + tests)
 - [ ] No-Goals respetados
-
-## Evidencia de tests
-- Adjuntar evidencia de ejecución de tests (CI, unit, property, adversarial, systemic según corresponda)
-
-## Riesgo institucional
-Describir nivel de riesgo y mitigaciones.
