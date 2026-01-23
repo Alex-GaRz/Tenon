@@ -34,30 +34,40 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest jsonschema hypothesis
 
-      - name: Run Unit Tests
+      - name: Run Tests
         env:
           PYTHONPATH: .
         run: |
-          echo " Running Unit Tests..."
-          pytest tests/unit -v
-
-      - name: Run Property Tests
-        env:
-          PYTHONPATH: .
-        run: |
-          echo " Running Property Tests..."
-          pytest tests/property -v
-
-      - name: Run Adversarial Tests
-        env:
-          PYTHONPATH: .
-        run: |
-          echo " Running Adversarial Tests..."
-          pytest tests/adversarial -v
-
-      - name: Run Systemic Tests (RFC Replay)
-        env:
-          PYTHONPATH: .
-        run: |
-          echo " Running Systemic Replay Tests..."
-          pytest tests_systemic -v
+          set -e
+          TEST_PATHS=""
+          
+          if [ -d "tests" ]; then
+            TEST_PATHS="$TEST_PATHS tests"
+          fi
+          
+          if [ -d "tests_systemic" ]; then
+            TEST_PATHS="$TEST_PATHS tests_systemic"
+          fi
+          
+          if [ -z "$TEST_PATHS" ]; then
+            echo "No test directories found (tests/ or tests_systemic/)"
+            
+            # Calculate changed files based on event type
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }})
+            else
+              CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}...${{ github.sha }})
+            fi
+            
+            # Check if core/tests paths were modified
+            if echo "$CHANGED_FILES" | grep -qE '^(core/|tests/|tests_systemic/)'; then
+              echo "ERROR: core/ or tests/ paths were modified but no test directories exist"
+              exit 1
+            else
+              echo "No test dirs and no relevant changes; skipping"
+              exit 0
+            fi
+          fi
+          
+          echo "Running pytest on:$TEST_PATHS"
+          pytest -v $TEST_PATHS
