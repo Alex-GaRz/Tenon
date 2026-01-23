@@ -7,7 +7,7 @@ Validates events against JSON Schema contracts (version-specific).
 
 from typing import Dict, Any, List
 import jsonschema
-from jsonschema import Draft7Validator
+from jsonschema import Draft7Validator, RefResolver
 
 from .load_contract import ContractLoader
 
@@ -52,6 +52,8 @@ class SchemaValidator:
         """
         self.contract_loader = contract_loader or ContractLoader()
         self._schema_cache: Dict[str, Dict[str, Any]] = {}
+        # Cache for dependency schemas (like LineageLink)
+        self._dependency_cache: Dict[str, Any] = {}
     
     def validate(self, event: Dict[str, Any]) -> SchemaValidationResult:
         """
@@ -87,8 +89,40 @@ class SchemaValidator:
                 )]
             )
         
-        # Validate against schema
-        validator = Draft7Validator(schema)
+        # --- FIX: Offline Resolution Logic ---
+        # The schema uses an absolute $id (https://tenon.canonical/...)
+        # but relative refs ($ref: ../../../...). This causes jsonschema to try
+        # fetching from the network. We must provide a local store map.
+        
+        # 1. Load the dependency (LineageLink)
+        # We assume dependencies track the main version or are v1.0.0
+        # For this implementation, we explicitly load v1.0.0 as referenced in the contract.
+        if "lineage_v1.0.0" not in self._dependency_cache:
+            self._dependency_cache["lineage_v1.0.0"] = (
+                self.contract_loader.load_lineage_link_schema("1.0.0")
+            )
+        lineage_schema = self._dependency_cache["lineage_v1.0.0"]
+
+        # 2. Map the calculated URI to the local schema
+        # Base ID: https://tenon.canonical/schemas/canonical_event/v1.0.0/CanonicalEvent.schema.json
+        # Ref: ../../../canonical_ids/v1.0.0/LineageLink.schema.json
+        # Resolved URI: https://tenon.canonical/canonical_ids/v1.0.0/LineageLink.schema.json
+        lineage_uri = "https://tenon.canonical/canonical_ids/v1.0.0/LineageLink.schema.json"
+        
+        store = {
+            lineage_uri: lineage_schema
+        }
+
+        # 3. Create Resolver
+        resolver = RefResolver(
+            base_uri=schema.get("$id", ""),
+            referrer=schema,
+            store=store
+        )
+        # -------------------------------------
+
+        # Validate against schema using the resolver
+        validator = Draft7Validator(schema, resolver=resolver)
         errors = []
         
         for error in validator.iter_errors(event):
