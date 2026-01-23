@@ -1,0 +1,103 @@
+{
+  "scenario": "partial_rollout",
+  "description": "Simulates gradual rollout with overlapping version usage",
+  "setup": {
+    "components": [
+      {
+        "name": "normalization_rules",
+        "versions": [
+          {
+            "version": "v1.0.0",
+            "effective_at": "2026-01-01T00:00:00Z",
+            "description": "Initial normalization rules"
+          },
+          {
+            "version": "v1.1.0",
+            "effective_at": "2026-02-15T00:00:00Z",
+            "description": "Enhanced currency handling"
+          }
+        ]
+      },
+      {
+        "name": "correlation_engine",
+        "versions": [
+          {
+            "version": "v1.0.0",
+            "effective_at": "2026-01-01T00:00:00Z",
+            "description": "Initial correlation engine"
+          },
+          {
+            "version": "v1.0.1",
+            "effective_at": "2026-02-20T00:00:00Z",
+            "description": "Bug fix for edge case"
+          }
+        ]
+      }
+    ],
+    "change_declarations": [
+      {
+        "rfc_id": "RFC-03",
+        "change_type": "Minor",
+        "compatibility": "backward-compatible",
+        "effective_at": "2026-02-15T00:00:00Z",
+        "components_impacted": ["normalization_rules"],
+        "versions_affected": [
+          {
+            "component": "normalization_rules",
+            "from_version": "v1.0.0",
+            "to_version": "v1.1.0"
+          }
+        ],
+        "description": "Enhanced currency handling in normalization"
+      },
+      {
+        "rfc_id": "RFC-04",
+        "change_type": "Patch",
+        "compatibility": "backward-compatible",
+        "effective_at": "2026-02-20T00:00:00Z",
+        "components_impacted": ["correlation_engine"],
+        "versions_affected": [
+          {
+            "component": "correlation_engine",
+            "from_version": "v1.0.0",
+            "to_version": "v1.0.1"
+          }
+        ],
+        "description": "Fix correlation edge case"
+      }
+    ]
+  },
+  "test_events": [
+    {
+      "timestamp": "2026-02-10T10:00:00Z",
+      "description": "Before any upgrades",
+      "expected_versions": {
+        "normalization_rules": "v1.0.0",
+        "correlation_engine": "v1.0.0"
+      }
+    },
+    {
+      "timestamp": "2026-02-16T10:00:00Z",
+      "description": "After normalization upgrade, before correlation",
+      "expected_versions": {
+        "normalization_rules": "v1.1.0",
+        "correlation_engine": "v1.0.0"
+      }
+    },
+    {
+      "timestamp": "2026-02-21T10:00:00Z",
+      "description": "After both upgrades",
+      "expected_versions": {
+        "normalization_rules": "v1.1.0",
+        "correlation_engine": "v1.0.1"
+      }
+    }
+  ],
+  "assertions": [
+    "Components upgrade independently",
+    "Version resolution is per-component",
+    "Multiple components can be at different versions simultaneously",
+    "Replay determinism holds for each component separately",
+    "No cross-component version conflicts"
+  ]
+}
