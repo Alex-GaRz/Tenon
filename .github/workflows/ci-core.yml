@@ -70,4 +70,11 @@ jobs:
           fi
           
           echo "Running pytest on:$TEST_PATHS"
-          pytest -v $TEST_PATHS
+          pytest -v $TEST_PATHS || {
+            code=$?
+            if [ $code -eq 5 ]; then
+              echo "No tests collected (exit 5) — treating as success for this run."
+              exit 0
+            fi
+            exit $code
+          }
