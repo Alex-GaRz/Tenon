@@ -1,0 +1,38 @@
+{
+  "scenario": "multiple_sources_in_order",
+  "description": "Events from multiple sources arriving in order",
+  "raw_events": [
+    {
+      "source": "BANK",
+      "transaction_id": "bank_txn_001",
+      "external_ref": "ORDER_12345",
+      "amount": 100.00,
+      "currency": "USD",
+      "timestamp": "2026-01-22T10:00:00Z",
+      "type": "payment",
+      "status": "completed"
+    },
+    {
+      "source": "PSP",
+      "transaction_id": "psp_txn_001",
+      "external_ref": "ORDER_12345",
+      "amount": 100.00,
+      "currency": "USD",
+      "timestamp": "2026-01-22T10:01:00Z",
+      "type": "payment",
+      "status": "settled"
+    },
+    {
+      "source": "ERP",
+      "invoice_id": "INV_67890",
+      "external_ref": "ORDER_12345",
+      "amount": 100.00,
+      "currency": "USD",
+      "timestamp": "2026-01-22T10:02:00Z",
+      "type": "invoice"
+    }
+  ],
+  "expected_canonical_count": 3,
+  "expected_accept_count": 3,
+  "expected_reject_count": 0
+}

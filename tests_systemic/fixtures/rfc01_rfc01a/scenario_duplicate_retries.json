@@ -1,0 +1,34 @@
+{
+  "scenario": "duplicate_retries",
+  "description": "Same event retried multiple times (idempotency test)",
+  "raw_events": [
+    {
+      "source": "PSP",
+      "transaction_id": "retry_txn_001",
+      "amount": 500.00,
+      "currency": "EUR",
+      "timestamp": "2026-01-22T10:00:00Z",
+      "attempt": 1
+    },
+    {
+      "source": "PSP",
+      "transaction_id": "retry_txn_001",
+      "amount": 500.00,
+      "currency": "EUR",
+      "timestamp": "2026-01-22T10:00:00Z",
+      "attempt": 2
+    },
+    {
+      "source": "PSP",
+      "transaction_id": "retry_txn_001",
+      "amount": 500.00,
+      "currency": "EUR",
+      "timestamp": "2026-01-22T10:00:00Z",
+      "attempt": 3
+    }
+  ],
+  "expected_canonical_count": 1,
+  "expected_accept_count": 1,
+  "expected_reject_duplicate_count": 2,
+  "note": "First attempt ACCEPT, subsequent attempts REJECT_DUPLICATE"
+}

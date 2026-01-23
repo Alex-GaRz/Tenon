@@ -1,0 +1,28 @@
+{
+  "scenario": "ambiguous_collision",
+  "description": "Same idempotency key but conflicting fields (FLAG_AMBIGUOUS)",
+  "raw_events": [
+    {
+      "source": "ERP",
+      "transaction_id": "conflict_001",
+      "external_ref": "CONFLICT_REF",
+      "amount": 1000.00,
+      "currency": "USD",
+      "timestamp": "2026-01-22T10:00:00Z",
+      "direction": "inbound"
+    },
+    {
+      "source": "ERP",
+      "transaction_id": "conflict_001",
+      "external_ref": "CONFLICT_REF",
+      "amount": 2000.00,
+      "currency": "USD",
+      "timestamp": "2026-01-22T10:00:00Z",
+      "direction": "outbound"
+    }
+  ],
+  "expected_canonical_count": 2,
+  "expected_accept_count": 1,
+  "expected_flag_ambiguous_count": 1,
+  "note": "Same source_event_id but different amount/direction → FLAG_AMBIGUOUS"
+}

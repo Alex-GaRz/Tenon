@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.canonical/schemas/canonical_ids/v1.0.0/IdentityDecision.schema.json",
+  "title": "IdentityDecision",
+  "description": "Append-only metadata record of identity decision (RFC-01A)",
+  "type": "object",
+  "required": [
+    "idempotency_key",
+    "decision",
+    "event_id",
+    "decided_at",
+    "evidence",
+    "decider_version"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "idempotency_key": {
+      "type": "string",
+      "description": "Deterministic idempotency key for the event"
+    },
+    "decision": {
+      "type": "string",
+      "description": "Identity decision result",
+      "enum": ["ACCEPT", "REJECT_DUPLICATE", "FLAG_AMBIGUOUS"]
+    },
+    "event_id": {
+      "type": "string",
+      "description": "Canonical event_id this decision applies to"
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when decision was made (ISO 8601)"
+    },
+    "evidence": {
+      "type": "object",
+      "description": "Structured evidence for this decision",
+      "required": ["reason"],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "description": "Human-readable reason for the decision"
+        },
+        "matched_event_id": {
+          "type": "string",
+          "description": "Event ID of exact match (for REJECT_DUPLICATE)"
+        },
+        "conflicting_fields": {
+          "type": "array",
+          "description": "Fields that conflict (for FLAG_AMBIGUOUS)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "match_score": {
+          "type": "number",
+          "description": "Confidence score of the match (0.0 to 1.0)",
+          "minimum": 0.0,
+          "maximum": 1.0
+        }
+      }
+    },
+    "decider_version": {
+      "type": "string",
+      "description": "Version of identity decider that made this decision",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    }
+  }
+}

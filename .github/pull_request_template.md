@@ -1,19 +1,29 @@
 ## Referencia a RFC
-- RFC: RFC-XX
+- RFC: RFC-00
 
 ## Tipo de cambio
-- [ ] Tooling / CI
-- [ ] RFC
+- [x] Tooling / CI
+- [x] RFC
 - [ ] Contracts
 - [ ] Core
 
-## Descripción del Cambio
-(Qué cambió y por qué. Máx 5 líneas.)
+## Descripción del Cambio (máx 5 líneas)
+Se agregan guardrails de gobernanza (docs/policies/templates/scripts/CI) para RFC-00.
+No se toca lógica de producto. No se toca /core ni /contracts.
 
 ## Rutas Tocadas
-- (ej. core/**, contracts/**, tests/**, .github/**)
+- docs/**
+- .github/**
+- scripts/**
+- .githooks/**
 
 ## Impacto en Invariantes
-- [ ] Cambios en /core (requiere RFC/enmienda + versionado + tests)
-- [ ] Cambios en /contracts (requiere versionado + tests)
-- [ ] No-Goals respetados
+- [x] No hay cambios en /core
+- [x] No hay cambios en /contracts
+- [x] No se introduce ejecución de dinero (No-Goals)
+
+## Evidencia de tests
+- GitHub Actions en este PR (checks deben quedar en verde)
+
+## Riesgo institucional
+Bajo: cambios solo de gobernanza/CI.

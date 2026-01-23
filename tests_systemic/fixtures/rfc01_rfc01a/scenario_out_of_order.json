@@ -1,0 +1,33 @@
+{
+  "scenario": "out_of_order_events",
+  "description": "Events arriving out of chronological order",
+  "raw_events": [
+    {
+      "source": "BANK",
+      "transaction_id": "txn_003",
+      "amount": 300.00,
+      "currency": "USD",
+      "timestamp": "2026-01-22T12:00:00Z",
+      "observed": "2026-01-22T12:05:00Z"
+    },
+    {
+      "source": "BANK",
+      "transaction_id": "txn_001",
+      "amount": 100.00,
+      "currency": "USD",
+      "timestamp": "2026-01-22T10:00:00Z",
+      "observed": "2026-01-22T12:10:00Z"
+    },
+    {
+      "source": "BANK",
+      "transaction_id": "txn_002",
+      "amount": 200.00,
+      "currency": "USD",
+      "timestamp": "2026-01-22T11:00:00Z",
+      "observed": "2026-01-22T12:07:00Z"
+    }
+  ],
+  "expected_canonical_count": 3,
+  "expected_accept_count": 3,
+  "note": "All should be accepted; order of ingestion should not affect identity decisions"
+}
