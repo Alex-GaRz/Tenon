@@ -1,0 +1,29 @@
+{
+  "description": "Valid WORM ledger chain with three entries",
+  "writes": [
+    {
+      "entry_type": "EVIDENCE_SNAPSHOT",
+      "content_base64": "ZXZpZGVuY2UtZGF0YS0wMDE=",
+      "schema_version": "v1",
+      "writer_identity": "system",
+      "retention_policy_id": "P7Y",
+      "written_at": "2026-01-23T10:00:00Z"
+    },
+    {
+      "entry_type": "STATE_CHECKPOINT",
+      "content_base64": "Y2hlY2twb2ludC1kYXRhLTAwMg==",
+      "schema_version": "v1",
+      "writer_identity": "system",
+      "retention_policy_id": "P7Y",
+      "written_at": "2026-01-23T10:00:01Z"
+    },
+    {
+      "entry_type": "AUDIT_RECORD",
+      "content_base64": "YXVkaXQtcmVjb3JkLTAwMw==",
+      "schema_version": "v1",
+      "writer_identity": "system",
+      "retention_policy_id": "P7Y",
+      "written_at": "2026-01-23T10:00:02Z"
+    }
+  ]
+}
