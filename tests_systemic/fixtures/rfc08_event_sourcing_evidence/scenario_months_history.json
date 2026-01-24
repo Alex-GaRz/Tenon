@@ -1,0 +1,34 @@
+{
+  "description": "Three events in strict temporal order representing months of history",
+  "events": [
+    {
+      "event_id": "evt-001",
+      "event_type": "INGEST_RECEIVED",
+      "produced_at": "2026-01-23T10:00:00.000000Z",
+      "payload": {
+        "source": "stripe",
+        "amount": 100
+      },
+      "caused_by": []
+    },
+    {
+      "event_id": "evt-002",
+      "event_type": "NORMALIZATION_APPLIED",
+      "produced_at": "2026-01-23T10:00:01.000000Z",
+      "payload": {
+        "normalized_amount": 100
+      },
+      "caused_by": ["evt-001"]
+    },
+    {
+      "event_id": "evt-003",
+      "event_type": "STATE_TRANSITION",
+      "produced_at": "2026-01-23T10:00:02.000000Z",
+      "payload": {
+        "from": "pending",
+        "to": "settled"
+      },
+      "caused_by": ["evt-002"]
+    }
+  ]
+}

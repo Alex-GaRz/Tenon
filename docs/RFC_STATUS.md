@@ -30,8 +30,8 @@ Un RFC **NO se considera completado** si no existe:
 | RFC-05 | Money State Machine | TODO | — | — | — | — |
 | RFC-06 | Discrepancy Taxonomy | TODO | — | — | — | — |
 | RFC-07 | Causality Model | TODO | — | — | — | — |
-| RFC-08 | Evidence Events | TODO | — | — | — | — |
-| RFC-09 | Immutable Ledger (WORM) | TODO | — | — | — | — |
+| RFC-08 | Evidence Events | PASS | PR #8 → release/v1-tenon | <539AABC> | pytest tests_systemic/test_rfc08_event_sourcing_evidence_* (PASS) | Evidence events v1 append-only. Orden total y replay determinista |
+| RFC-09 | Immutable Ledger (WORM) | PASS | PR #8 → release/v1-tenon | <539AABC> | pytest tests_systemic/test_rfc09_immutable_ledger_worm_* (PASS) | WORM ledger v1 con encadenamiento criptográfico canónico |
 | RFC-10 | Idempotency Guardian | PASS | PR #5 → release/v1-tenon | <67b08a1> | python -m pytest tests_systemic\rfc10_idempotency_guardian -v (40 passed) | Contracts idempotency_guardian v1 (append-only; decisiones explícitas) |
 | RFC-11 | Adapter Contracts | TODO | — | — | — | — |
 | RFC-12 | Change Control | PASS | PR #4 → release/v1-tenon | <b175f32> | pytest tests_systemic/ -k rfc12 (7 passed) | Append-only. Nuevo contrato v1. Sin impacto en contratos existentes |

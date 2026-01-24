@@ -1,0 +1,33 @@
+{
+  "description": "Events with point-in-time query cutoff",
+  "cutoff_produced_at": "2026-01-23T11:00:01Z",
+  "events": [
+    {
+      "event_id": "evt-101",
+      "event_type": "INGEST_RECEIVED",
+      "produced_at": "2026-01-23T11:00:00Z",
+      "payload": {
+        "source": "paypal"
+      },
+      "caused_by": []
+    },
+    {
+      "event_id": "evt-102",
+      "event_type": "INGEST_RECEIVED",
+      "produced_at": "2026-01-23T11:00:01Z",
+      "payload": {
+        "source": "bank"
+      },
+      "caused_by": []
+    },
+    {
+      "event_id": "evt-103",
+      "event_type": "CORRELATION_MATCH",
+      "produced_at": "2026-01-23T11:00:02Z",
+      "payload": {
+        "match_confidence": 0.95
+      },
+      "caused_by": ["evt-101", "evt-102"]
+    }
+  ]
+}
