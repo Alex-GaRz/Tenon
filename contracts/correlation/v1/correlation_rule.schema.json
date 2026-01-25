@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "rule_id",
+    "rule_version",
+    "applicability",
+    "evidence_required",
+    "explanation_template"
+  ],
+  "properties": {
+    "rule_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rule_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_kinds", "direction"],
+      "properties": {
+        "event_kinds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["DIRECTED", "UNDIRECTED"]
+        }
+      }
+    },
+    "evidence_required": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "explanation_template": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

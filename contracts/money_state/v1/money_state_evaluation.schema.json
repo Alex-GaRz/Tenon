@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evaluation_id",
+    "flow_id",
+    "event_id",
+    "timestamp",
+    "state",
+    "transition_reason",
+    "evidence_pointer",
+    "state_version",
+    "machine_version",
+    "confidence_level",
+    "evaluated_at"
+  ],
+  "properties": {
+    "evaluation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "flow_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "EXPECTED",
+        "INITIATED",
+        "AUTHORIZED",
+        "IN_TRANSIT",
+        "SETTLED",
+        "REFUNDED",
+        "REVERSED",
+        "FAILED",
+        "EXPIRED",
+        "AMBIGUOUS",
+        "UNKNOWN"
+      ]
+    },
+    "transition_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_pointer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    },
+    "machine_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    },
+    "confidence_level": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "evaluated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

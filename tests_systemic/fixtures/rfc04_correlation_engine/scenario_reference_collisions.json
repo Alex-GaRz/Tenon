@@ -1,0 +1,58 @@
+[
+  {
+    "event_id": "event_001",
+    "external_reference": "REF123",
+    "amount": 100.0,
+    "currency": "USD",
+    "timestamp": "2026-01-25T10:00:00Z"
+  },
+  {
+    "event_id": "event_002",
+    "external_reference": "REF123",
+    "amount": 100.0,
+    "currency": "USD",
+    "timestamp": "2026-01-25T10:01:00Z"
+  },
+  {
+    "event_id": "event_003",
+    "external_reference": "REF123",
+    "amount": 100.0,
+    "currency": "USD",
+    "timestamp": "2026-01-25T10:02:00Z"
+  },
+  {
+    "event_id": "event_004",
+    "external_reference": "REF456",
+    "amount": 200.0,
+    "currency": "EUR",
+    "timestamp": "2026-01-25T11:00:00Z"
+  },
+  {
+    "event_id": "event_005",
+    "external_reference": "REF456",
+    "amount": 200.0,
+    "currency": "EUR",
+    "timestamp": "2026-01-25T11:01:00Z"
+  },
+  {
+    "event_id": "event_006",
+    "external_reference": "REF456",
+    "amount": 200.0,
+    "currency": "EUR",
+    "timestamp": "2026-01-25T11:02:00Z"
+  },
+  {
+    "event_id": "event_007",
+    "external_reference": "REF789",
+    "amount": 50.0,
+    "currency": "GBP",
+    "timestamp": "2026-01-25T12:00:00Z"
+  },
+  {
+    "event_id": "event_008",
+    "external_reference": "REF789",
+    "amount": 50.0,
+    "currency": "GBP",
+    "timestamp": "2026-01-25T12:01:00Z"
+  }
+]
