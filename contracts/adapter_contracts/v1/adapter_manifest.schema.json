@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AdapterManifest",
+  "description": "RFC-11 Section 4.1 - Adapter Contract Definition",
+  "type": "object",
+  "required": [
+    "adapter_id",
+    "adapter_type",
+    "supported_formats",
+    "declared_event_capabilities",
+    "schema_version",
+    "adapter_version"
+  ],
+  "properties": {
+    "adapter_id": {
+      "type": "string",
+      "description": "Unique identifier for the adapter"
+    },
+    "adapter_type": {
+      "type": "string",
+      "enum": ["BANK", "ERP", "PSP", "MARKETPLACE", "INTERNAL", "OTHER"],
+      "description": "Type of external system"
+    },
+    "supported_formats": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["JSON", "CSV", "XML", "PDF", "OTHER"]
+      },
+      "minItems": 1,
+      "description": "Formats supported by this adapter"
+    },
+    "declared_event_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Event types this adapter can emit"
+    },
+    "schema_version": {
+      "type": "string",
+      "description": "Version of this schema"
+    },
+    "adapter_version": {
+      "type": "string",
+      "description": "Version of the adapter implementation"
+    }
+  },
+  "additionalProperties": false
+}
