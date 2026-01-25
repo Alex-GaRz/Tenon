@@ -1,0 +1,74 @@
+{
+  "scenario_id": "rfc06-amount-mismatch",
+  "description": "AMOUNT_MISMATCH with floating-point tolerance",
+  "tolerance": 1.0,
+  "detected_at": "2026-01-25T10:00:00Z",
+  "cases": [
+    {
+      "case_id": "within-tolerance",
+      "description": "Delta within tolerance, no discrepancy",
+      "money_flow": {
+        "flow_id": "flow-001"
+      },
+      "money_state_evaluation": {
+        "state_id": "state-001",
+        "expected_amount": 100.0,
+        "observed_amount": 100.5
+      },
+      "expected_outcome": {
+        "discrepancy_count": 0,
+        "discrepancy_type": null
+      }
+    },
+    {
+      "case_id": "outside-tolerance-small",
+      "description": "Delta exceeds tolerance (small mismatch)",
+      "money_flow": {
+        "flow_id": "flow-002"
+      },
+      "money_state_evaluation": {
+        "state_id": "state-002",
+        "expected_amount": 100.0,
+        "observed_amount": 95.0
+      },
+      "expected_outcome": {
+        "discrepancy_count": 1,
+        "discrepancy_type": "AMOUNT_MISMATCH",
+        "severity_hint": "MEDIUM"
+      }
+    },
+    {
+      "case_id": "outside-tolerance-large",
+      "description": "Delta exceeds tolerance (large mismatch)",
+      "money_flow": {
+        "flow_id": "flow-003"
+      },
+      "money_state_evaluation": {
+        "state_id": "state-003",
+        "expected_amount": 100.0,
+        "observed_amount": 85.0
+      },
+      "expected_outcome": {
+        "discrepancy_count": 1,
+        "discrepancy_type": "AMOUNT_MISMATCH",
+        "severity_hint": "HIGH"
+      }
+    },
+    {
+      "case_id": "exact-match",
+      "description": "Exact match, no discrepancy",
+      "money_flow": {
+        "flow_id": "flow-004"
+      },
+      "money_state_evaluation": {
+        "state_id": "state-004",
+        "expected_amount": 100.0,
+        "observed_amount": 100.0
+      },
+      "expected_outcome": {
+        "discrepancy_count": 0,
+        "discrepancy_type": null
+      }
+    }
+  ]
+}

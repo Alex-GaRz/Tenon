@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tenon.dev/schemas/causality/v1/causality_attribution.schema.json",
+  "title": "CausalityAttribution",
+  "description": "WORM contract for CausalityAttribution with closed taxonomy (RFC-07)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "causality_id",
+    "discrepancy_id",
+    "cause_type",
+    "confidence_level",
+    "supporting_events",
+    "supporting_states",
+    "supporting_rules",
+    "explanation",
+    "attributed_at",
+    "model_version"
+  ],
+  "properties": {
+    "causality_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for this causality attribution"
+    },
+    "discrepancy_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier of the discrepancy being attributed"
+    },
+    "cause_type": {
+      "type": "string",
+      "enum": [
+        "SOURCE_DELAY",
+        "SOURCE_OMISSION",
+        "SOURCE_DUPLICATION",
+        "SOURCE_INCONSISTENCY",
+        "INTEGRATION_MAPPING_ERROR",
+        "NORMALIZATION_LOSS",
+        "CORRELATION_AMBIGUITY",
+        "STATE_TRANSITION_GAP",
+        "EXTERNAL_SYSTEM_CHANGE",
+        "UNKNOWN_CAUSE"
+      ],
+      "description": "Closed taxonomy of causal types (RFC-07)"
+    },
+    "confidence_level": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Confidence in this attribution (0.0 = no confidence, 1.0 = certain)"
+    },
+    "supporting_events": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Event identifiers supporting this attribution"
+    },
+    "supporting_states": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "State identifiers supporting this attribution"
+    },
+    "supporting_rules": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Rule identifiers supporting this attribution"
+    },
+    "explanation": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable explanation of the causal attribution"
+    },
+    "attributed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when attribution was made (injected externally)"
+    },
+    "model_version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Version of the causality model used"
+    }
+  },
+  "anyOf": [
+    {
+      "properties": {
+        "supporting_events": {
+          "minItems": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "supporting_states": {
+          "minItems": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "supporting_rules": {
+          "minItems": 1
+        }
+      }
+    }
+  ]
+}
