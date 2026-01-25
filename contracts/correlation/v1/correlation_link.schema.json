@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "link_id",
+    "source_event_id",
+    "target_event_id",
+    "link_type",
+    "rule_id",
+    "rule_version",
+    "version",
+    "score",
+    "evidence",
+    "engine_version",
+    "created_at"
+  ],
+  "properties": {
+    "link_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "link_type": {
+      "type": "string",
+      "enum": ["POTENTIAL_MATCH", "SEQUENCE", "REVERSAL", "REFUND", "RELATED"]
+    },
+    "rule_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rule_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_type", "pointer", "details"],
+        "properties": {
+          "evidence_type": {
+            "type": "string",
+            "enum": ["FIELD_MATCH", "AMOUNT_TOLERANCE", "TIME_WINDOW", "SEQUENCE_OBSERVED", "REFERENCE_MATCH", "CONTRADICTION_FLAG"]
+          },
+          "pointer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "details": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "engine_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

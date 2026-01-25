@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "from_state",
+    "to_state",
+    "required_evidence",
+    "forbidden_evidence",
+    "timeout_policy",
+    "transition_rule_version"
+  ],
+  "properties": {
+    "from_state": {
+      "type": "string",
+      "enum": [
+        "EXPECTED",
+        "INITIATED",
+        "AUTHORIZED",
+        "IN_TRANSIT",
+        "SETTLED",
+        "REFUNDED",
+        "REVERSED",
+        "FAILED",
+        "EXPIRED",
+        "AMBIGUOUS",
+        "UNKNOWN"
+      ]
+    },
+    "to_state": {
+      "type": "string",
+      "enum": [
+        "EXPECTED",
+        "INITIATED",
+        "AUTHORIZED",
+        "IN_TRANSIT",
+        "SETTLED",
+        "REFUNDED",
+        "REVERSED",
+        "FAILED",
+        "EXPIRED",
+        "AMBIGUOUS",
+        "UNKNOWN"
+      ]
+    },
+    "required_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forbidden_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "timeout_policy": {
+      "type": "object",
+      "additionalProperties": false
+    },
+    "transition_rule_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    }
+  }
+}
