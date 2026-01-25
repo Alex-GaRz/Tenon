@@ -1,0 +1,30 @@
+{
+  "scenario_id": "rfc07-multiple-causes",
+  "description": "Multiple plausible causes for ambiguous discrepancy (no collapse)",
+  "attributed_at": "2026-01-25T10:00:00Z",
+  "model_version": "1.0.0",
+  "discrepancy": {
+    "discrepancy_id": "disc-ambiguous-001",
+    "flow_id": "flow-001",
+    "discrepancy_type": "AMOUNT_MISMATCH",
+    "explanation": "Amount differs but unclear why"
+  },
+  "historical_evidence": {
+    "is_ambiguous": true,
+    "delayed_events": [
+      "evt-source-001"
+    ],
+    "mapping_errors": [
+      "evt-integration-001"
+    ],
+    "notes": "Evidence suggests both source delay and mapping error are plausible"
+  },
+  "expected_outcome": {
+    "min_attribution_count": 2,
+    "expected_cause_types": [
+      "SOURCE_DELAY",
+      "INTEGRATION_MAPPING_ERROR"
+    ],
+    "explanation": "Both causes should be preserved, not collapsed into one"
+  }
+}

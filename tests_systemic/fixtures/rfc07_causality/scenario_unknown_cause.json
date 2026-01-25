@@ -1,0 +1,19 @@
+{
+  "scenario_id": "rfc07-unknown-cause",
+  "description": "UNKNOWN_CAUSE when evidence is insufficient",
+  "attributed_at": "2026-01-25T10:00:00Z",
+  "model_version": "1.0.0",
+  "discrepancy": {
+    "discrepancy_id": "disc-insufficient-001",
+    "flow_id": "flow-001",
+    "discrepancy_type": "INSUFFICIENT_EVIDENCE",
+    "explanation": "Discrepancy detected but cannot classify"
+  },
+  "historical_evidence": {},
+  "expected_outcome": {
+    "cause_type": "UNKNOWN_CAUSE",
+    "confidence_level": 0.0,
+    "explanation_contains": "insufficient",
+    "supporting_rules_count": 1
+  }
+}

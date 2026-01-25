@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tenon.dev/schemas/discrepancy/v1/discrepancy.schema.json",
+  "title": "Discrepancy",
+  "description": "WORM contract for Discrepancy with closed taxonomy (RFC-06)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "discrepancy_id",
+    "flow_id",
+    "discrepancy_type",
+    "severity_hint",
+    "supporting_states",
+    "supporting_events",
+    "supporting_links",
+    "rule_id",
+    "rule_version",
+    "explanation",
+    "detected_at"
+  ],
+  "properties": {
+    "discrepancy_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for this discrepancy"
+    },
+    "flow_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier of the money flow being diagnosed"
+    },
+    "discrepancy_type": {
+      "type": "string",
+      "enum": [
+        "NO_DISCREPANCY",
+        "TIMING_DELAY",
+        "MISSING_EVENT",
+        "DUPLICATE_EVENT",
+        "AMOUNT_MISMATCH",
+        "CURRENCY_MISMATCH",
+        "STATUS_CONFLICT",
+        "UNEXPECTED_REVERSAL",
+        "ORPHAN_EVENT",
+        "INCONSISTENT_FLOW",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "description": "Closed taxonomy of discrepancy types (RFC-06)"
+    },
+    "severity_hint": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "UNKNOWN"
+      ],
+      "description": "Severity classification hint"
+    },
+    "supporting_states": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "State identifiers supporting this discrepancy"
+    },
+    "supporting_events": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Event identifiers supporting this discrepancy"
+    },
+    "supporting_links": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Correlation link identifiers supporting this discrepancy"
+    },
+    "rule_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier of the diagnostic rule that detected this discrepancy"
+    },
+    "rule_version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Version of the diagnostic rule"
+    },
+    "explanation": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable explanation of the discrepancy"
+    },
+    "detected_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when discrepancy was detected (injected externally)"
+    }
+  },
+  "anyOf": [
+    {
+      "properties": {
+        "supporting_states": {
+          "minItems": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "supporting_events": {
+          "minItems": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "supporting_links": {
+          "minItems": 1
+        }
+      }
+    }
+  ]
+}
