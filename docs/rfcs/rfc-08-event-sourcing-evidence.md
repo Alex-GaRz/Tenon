@@ -1,4 +1,4 @@
-# RFC-08 — EVENT_SOURCING_EVIDENCE
+﻿# RFC-08 — EVENT_SOURCING_EVIDENCE
 **Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
 **Estado:** DRAFT  
 **Relación:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
@@ -7,19 +7,19 @@ RFC-05_MONEY_STATE_MACHINE, RFC-06_DISCREPANCY_TAXONOMY, RFC-07_CAUSALITY_MODEL
 
 ---
 
-## 1) Propósito
+## Propósito
 
 Establecer **event sourcing como mecanismo probatorio** (no solo arquitectónico) para que Tenon
 pueda **reconstruir cualquier estado pasado** a partir de hechos inmutables y **demostrar**
 cómo y por qué se llegó a una conclusión operativa.
 
-Este RFC define la “máquina del tiempo” del sistema.
+Este RFC define la “máquina del tiempo” del sistema.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
-- Definir el ledger WORM físico o firma criptográfica (RFC-09).
+- Definir el ledger WORM fí­sico o firma criptográfica (RFC-09).
 - Optimizar almacenamiento, compresión o retención.
 - Exponer APIs de consulta o reporting.
 - Reemplazar data lakes o warehouses.
@@ -27,7 +27,7 @@ Este RFC define la “máquina del tiempo” del sistema.
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
 ### 3.1 Hechos sobre estados
 - El sistema persiste **eventos** que explican cambios, no snapshots mutables.
@@ -37,17 +37,17 @@ Este RFC define la “máquina del tiempo” del sistema.
 - Un evento emitido **no se modifica**.
 - Correcciones se expresan como **nuevos eventos** que referencian hechos previos.
 
-### 3.3 Orden y causalidad explícitos
-- El orden de eventos se registra explícitamente.
+### 3.3 Orden y causalidad explí­citos
+- El orden de eventos se registra explí­citamente.
 - La causalidad entre eventos queda representada por referencias, no por suposición temporal.
 
 ### 3.4 Replay determinista
-- Replay completo con la misma versión del sistema ⇒ mismos resultados.
-- Replay con versiones distintas ⇒ resultados distintos **explicables por versión**.
+- Replay completo con la misma versión del sistema â‡’ mismos resultados.
+- Replay con versiones distintas â‡’ resultados distintos **explicables por versión**.
 
 ---
 
-## 4) Contratos (conceptuales)
+## Contratos (conceptuales)
 
 ### 4.1 EvidenceEvent (evento de evidencia)
 
@@ -63,7 +63,7 @@ Todo evento persistido en el store de evidencia contiene:
 - `producer` (componente/servicio)
 - `produced_at`
 
-> `EvidenceEvent` es el **hecho mínimo** que permite reconstrucción completa.
+> `EvidenceEvent` es el **hecho mí­nimo** que permite reconstrucción completa.
 
 ---
 
@@ -75,7 +75,7 @@ Todo evento persistido en el store de evidencia contiene:
 
 ---
 
-## 5) Flujo de event sourcing (alto nivel)
+## Flujo de event sourcing (alto nivel)
 
 1. Ocurre una observación o decisión (ingesta, normalización, correlación, etc.).
 2. Se emite un `EvidenceEvent` describiendo **qué pasó** y **por qué**.
@@ -84,23 +84,23 @@ Todo evento persistido en el store de evidencia contiene:
 
 ---
 
-## 6) Threat Model
+## Threat Model
 
 ### 6.1 Amenazas
-- **Snapshots engañosos** que no permiten reconstrucción.
-- **Reescritura de historia** para “arreglar” auditorías.
-- **Eventos implícitos** no registrados (decisiones invisibles).
-- **Dependencia temporal** sin causalidad explícita.
+- **Snapshots engaí±osos** que no permiten reconstrucción.
+- **Reescritura de historia** para “arreglar” auditorí­as.
+- **Eventos implí­citos** no registrados (decisiones invisibles).
+- **Dependencia temporal** sin causalidad explí­cita.
 
 ### 6.2 Controles exigidos
 - Prohibición de snapshots como fuente de verdad.
 - Persistencia de todos los eventos decisionales.
-- Referencias causales explícitas (`caused_by`).
+- Referencias causales explí­citas (`caused_by`).
 - Versionado de esquemas de eventos.
 
 ---
 
-## 7) Pruebas
+## Pruebas
 
 ### 7.1 Unitarias
 - Todo cambio de estado emite `EvidenceEvent`.
@@ -108,7 +108,7 @@ Todo evento persistido en el store de evidencia contiene:
 - Referencias causales válidas.
 
 ### 7.2 Propiedades
-- Replay completo ⇒ mismo resultado (misma versión).
+- Replay completo â‡’ mismo resultado (misma versión).
 - Monotonicidad: el log solo crece.
 - No dependencia de estado externo.
 
@@ -120,19 +120,19 @@ Todo evento persistido en el store de evidencia contiene:
 
 ---
 
-## 8) Criterios de Aceptación
+## Criterios de Aceptación
 
 Este RFC se considera cumplido cuando:
 1. El sistema puede reconstruir cualquier diagnóstico pasado solo desde eventos.
-2. No existen decisiones “fuera del log”.
-3. El orden y la causalidad de eventos son explícitos.
+2. No existen decisiones “fuera del log”.
+3. El orden y la causalidad de eventos son explí­citos.
 4. Replay es determinista y versionado.
-5. La evidencia producida es defendible ante auditoría.
+5. La evidencia producida es defendible ante auditorí­a.
 
 ---
 
-## 9) Assumptions
+## Assumptions
 
 - El costo de almacenar eventos es menor que el costo de perder historia.
-- La defensa legal requiere “película”, no reportes estáticos.
+- La defensa legal requiere “pelí­cula”, no reportes estáticos.
 - La complejidad del replay es aceptable a cambio de verdad reproducible.

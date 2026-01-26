@@ -1,4 +1,4 @@
-# RFC-12 — CHANGE_CONTROL
+﻿# RFC-12 — CHANGE_CONTROL
 **Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
 **Estado:** DRAFT  
 **Relación:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
@@ -9,7 +9,7 @@ RFC-10_IDEMPOTENCY_GUARDIAN, RFC-11_ADAPTER_CONTRACTS
 
 ---
 
-## 1) Propósito
+## Propósito
 
 Definir el **control institucional de cambios** para que Tenon preserve
 **reproducibilidad histórica, defensa legal y estabilidad semántica**
@@ -19,20 +19,20 @@ Este RFC gobierna **cómo cambia el sistema sin romper su verdad pasada**.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
 - Acelerar desarrollo sacrificando disciplina.
 - Permitir hotfixes silenciosos en producción.
-- Reescribir historia para “alinear” resultados.
+- Reescribir historia para “alinear” resultados.
 - Resolver gestión humana de aprobaciones.
-- Definir tooling específico (GitHub, Jira, etc.).
+- Definir tooling especí­fico (GitHub, Jira, etc.).
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
 ### 3.1 Historia inmutable
-- Ningún cambio puede:
+- Ningíºn cambio puede:
   - alterar eventos históricos,
   - re-clasificar discrepancias pasadas,
   - modificar decisiones de idempotencia previas.
@@ -40,38 +40,38 @@ Este RFC gobierna **cómo cambia el sistema sin romper su verdad pasada**.
 ### 3.2 Cambios siempre versionados
 - Todo cambio relevante introduce:
   - nueva versión de contrato / regla / modelo,
-  - convivencia explícita con versiones previas,
+  - convivencia explí­cita con versiones previas,
   - fecha efectiva declarada.
 
-### 3.3 Compatibilidad explícita
+### 3.3 Compatibilidad explí­cita
 - Todo cambio declara si es:
   - backward-compatible,
   - forward-compatible,
   - breaking change.
-- Los breaking changes requieren RFC explícito.
+- Los breaking changes requieren RFC explí­cito.
 
 ### 3.4 Gobernanza por RFC
-- Ningún cambio estructural existe sin RFC aprobado.
-- Prohibidos cambios “técnicos” sin impacto declarado.
+- Ningíºn cambio estructural existe sin RFC aprobado.
+- Prohibidos cambios “técnicos” sin impacto declarado.
 
 ---
 
-## 4) Ámbitos de cambio gobernados
+## ímbitos de cambio gobernados
 
 Este RFC aplica obligatoriamente a cambios en:
 
-- `/contracts` (schemas, ontologías, enums)
+- `/contracts` (schemas, ontologí­as, enums)
 - `/core` (reglas canónicas, motores, estados)
 - `/adapters` (interfaces, declaraciones)
 - Reglas de normalización
 - Reglas de correlación
-- Taxonomías de discrepancias
+- Taxonomí­as de discrepancias
 - Modelos de causalidad
 - Reglas de idempotencia
 
 ---
 
-## 5) Tipos de cambio
+## Tipos de cambio
 
 ### 5.1 Patch Change
 - Corrección sin impacto semántico.
@@ -93,7 +93,7 @@ Este RFC aplica obligatoriamente a cambios en:
 
 ---
 
-## 6) Protocolo de cambio (alto nivel)
+## Protocolo de cambio (alto nivel)
 
 1. Identificación del cambio propuesto.
 2. Clasificación (Patch / Minor / Major).
@@ -105,7 +105,7 @@ Este RFC aplica obligatoriamente a cambios en:
 
 ---
 
-## 7) Evidencia de cambio
+## Evidencia de cambio
 
 Todo cambio aprobado produce:
 
@@ -120,25 +120,25 @@ Estos eventos se escriben en el ledger WORM.
 
 ---
 
-## 8) Threat Model
+## Threat Model
 
 ### 8.1 Amenazas
 - **Cambios silenciosos** que rompen reproducibilidad.
 - **Refactors disfrazados** de mejoras técnicas.
 - **Version drift** no controlado.
 - **Reprocesamiento retroactivo** de historia.
-- **Presión operativa** para “arreglar resultados”.
+- **Presión operativa** para “arreglar resultados”.
 
 ### 8.2 Controles exigidos
 - RFC obligatorio para cambios semánticos.
 - Versionado coexistente.
 - Prohibición de mutación histórica.
 - Evidencia inmutable de cambios.
-- Auditoría de compatibilidad.
+- Auditorí­a de compatibilidad.
 
 ---
 
-## 9) Pruebas
+## Pruebas
 
 ### 9.1 Unitarias
 - Validación de versionado correcto.
@@ -153,23 +153,23 @@ Estos eventos se escriben en el ledger WORM.
 ### 9.3 Sistémicas
 - Simulación de upgrade con historia extensa.
 - Rollout parcial de nuevas reglas.
-- Auditoría de cambio tras incidente simulado.
+- Auditorí­a de cambio tras incidente simulado.
 - Comparación before/after con explicación.
 
 ---
 
-## 10) Criterios de Aceptación
+## Criterios de Aceptación
 
 Este RFC se considera cumplido cuando:
 1. Todo cambio relevante está gobernado por RFC.
 2. La historia permanece reproducible bajo versiones originales.
-3. Los breaking changes son explícitos y justificados.
+3. Los breaking changes son explí­citos y justificados.
 4. Existe evidencia inmutable de cada cambio.
 5. El sistema resiste presión operativa sin degradar verdad.
 
 ---
 
-## 11) Assumptions
+## Assumptions
 
 - El cambio es inevitable; la corrupción no.
 - La disciplina de versionado es más barata que el litigio.

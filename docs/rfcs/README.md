@@ -1,10 +1,10 @@
-# RFCs — Tenon System Design Documents
+﻿# RFCs — Tenon System Design Documents
 
 Este directorio contiene los RFCs (Request for Comments) que definen la arquitectura, invariantes y contratos del sistema Tenon.
 
 ---
 
-## Índice de RFCs
+## índice de RFCs
 
 - **[RFC-00 — MANIFEST](RFC-00_MANIFEST.md)** — Documento constitucional del sistema. Define propósito, no-goals, invariantes, threat model y contratos institucionales.
 

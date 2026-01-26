@@ -1,36 +1,36 @@
-# RFC-01A — CANONICAL_IDS
+﻿# RFC-01A — CANONICAL_IDS
 **Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
 **Estado:** DRAFT  
 **Relación:** Enmienda directa y dependiente de RFC-01_CANONICAL_EVENT
 
 ---
 
-## 1) Propósito
+## Propósito
 
 Definir **identidad, correlación y linaje** de los eventos canónicos para que Tenon pueda:
 - detectar duplicados lógicos,
-- reconstruir la “película” completa de una unidad monetaria,
+- reconstruir la “pelí­cula” completa de una unidad monetaria,
 - sostener idempotencia como evidencia,
-- defender reconstrucciones históricas ante auditoría o litigio.
+- defender reconstrucciones históricas ante auditorí­a o litigio.
 
 Este RFC existe porque **sin identidad persistente no hay verdad reproducible**.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
-- Definir reglas de correlación probabilística (RFC-04).
+- Definir reglas de correlación probabilí­stica (RFC-04).
 - Definir estados del dinero (RFC-05).
 - Definir discrepancias o causalidad (RFC-06/07).
-- Definir almacenamiento físico, índices o performance.
-- Resolver identidad “perfecta” en presencia de datos corruptos (se registra, no se inventa).
+- Definir almacenamiento fí­sico, í­ndices o performance.
+- Resolver identidad “perfecta” en presencia de datos corruptos (se registra, no se inventa).
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
 ### 3.1 Identidad interna inmutable
-- Todo `CanonicalEvent` tiene un `event_id` **único, estable e inmutable**.
+- Todo `CanonicalEvent` tiene un `event_id` **íºnico, estable e inmutable**.
 - `event_id` **no depende** de la fuente externa.
 - `event_id` jamás se reutiliza ni se reescribe.
 
@@ -40,18 +40,18 @@ Este RFC existe porque **sin identidad persistente no hay verdad reproducible**.
 
 ### 3.3 Idempotencia como propiedad observable
 - El sistema debe poder **probar** que dos ingestas representan el mismo hecho observado.
-- La idempotencia se expresa como **decisión explícita**: ACCEPT / REJECT_DUPLICATE / FLAG_AMBIGUOUS.
+- La idempotencia se expresa como **decisión explí­cita**: ACCEPT / REJECT_DUPLICATE / FLAG_AMBIGUOUS.
 
-### 3.4 Linaje explícito
-- Relaciones entre eventos (p.ej., refund → payment, reversal → payout) se modelan como **links explícitos**, no como campos implícitos.
-- El linaje es **append-only**: se agregan vínculos; no se reescribe historia.
+### 3.4 Linaje explí­cito
+- Relaciones entre eventos (p.ej., refund â†’ payment, reversal â†’ payout) se modelan como **links explí­citos**, no como campos implí­citos.
+- El linaje es **append-only**: se agregan ví­nculos; no se reescribe historia.
 
 ### 3.5 Determinismo
 - Dado el mismo set de eventos y las mismas versiones del sistema, las decisiones de identidad y linaje son reproducibles.
 
 ---
 
-## 4) Contratos (conceptuales)
+## Contratos (conceptuales)
 
 ### 4.1 Campos de identidad obligatorios
 
@@ -72,10 +72,10 @@ Este RFC existe porque **sin identidad persistente no hay verdad reproducible**.
 - `idempotency_decision` (ACCEPT | REJECT_DUPLICATE | FLAG_AMBIGUOUS)
 
 **Linaje**
-- `lineage_links[]` (lista de relaciones explícitas)
+- `lineage_links[]` (lista de relaciones explí­citas)
   - `type` (DERIVES_FROM | REVERSAL_OF | REFUND_OF | ADJUSTMENT_OF | RELATED_TO)
   - `target_event_id`
-  - `evidence` (qué regla/observación justificó el vínculo)
+  - `evidence` (qué regla/observación justificó el ví­nculo)
   - `version`
 
 ---
@@ -93,15 +93,15 @@ La **idempotency_key** se define como una función determinista de:
 
 **Reglas:**
 - Si `source_event_id` existe, tiene prioridad.
-- Si no existe, la clave se deriva del conjunto mínimo de evidencia disponible.
+- Si no existe, la clave se deriva del conjunto mí­nimo de evidencia disponible.
 - Si la evidencia es insuficiente para afirmar unicidad:
-  - la decisión es `FLAG_AMBIGUOUS`, nunca “ACCEPT” por conveniencia.
+  - la decisión es `FLAG_AMBIGUOUS`, nunca “ACCEPT” por conveniencia.
 
-> La fórmula exacta (hashing, concatenación) se fija en contratos técnicos posteriores; aquí se fija el **principio**.
+> La fórmula exacta (hashing, concatenación) se fija en contratos técnicos posteriores; aquí­ se fija el **principio**.
 
 ---
 
-## 5) Modelo de decisiones de identidad
+## Modelo de decisiones de identidad
 
 Ante una nueva ingesta:
 
@@ -123,23 +123,23 @@ Todas las decisiones se registran como eventos/metadata append-only.
 
 ---
 
-## 6) Threat Model
+## Threat Model
 
 ### 6.1 Amenazas
 - **Duplicación silenciosa** por reintentos o race conditions.
 - **Colisión de referencias externas** (IDs reciclados o mal usados).
-- **Normalización agresiva** que “fuerza” unicidad falsa.
+- **Normalización agresiva** que “fuerza” unicidad falsa.
 - **Borrado de historia** al colapsar eventos distintos como uno solo.
 
 ### 6.2 Controles exigidos
-- Decisión de idempotencia explícita y registrable.
+- Decisión de idempotencia explí­cita y registrable.
 - Prohibición de colapsar eventos sin evidencia suficiente.
-- Linaje como estructura explícita (no inferida a posteriori).
+- Linaje como estructura explí­cita (no inferida a posteriori).
 - Versionado de reglas de identidad.
 
 ---
 
-## 7) Pruebas
+## Pruebas
 
 ### 7.1 Unitarias
 - Un `event_id` no puede cambiar.
@@ -147,8 +147,8 @@ Todas las decisiones se registran como eventos/metadata append-only.
 - Registro obligatorio de `idempotency_decision`.
 
 ### 7.2 Propiedades
-- Idempotencia fuerte: N reintentos del mismo hecho ⇒ 1 ACCEPT + (N−1) REJECT_DUPLICATE.
-- Ambigüedad conservadora: evidencia insuficiente ⇒ FLAG_AMBIGUOUS.
+- Idempotencia fuerte: N reintentos del mismo hecho â‡’ 1 ACCEPT + (Nâˆ’1) REJECT_DUPLICATE.
+- Ambigí¼edad conservadora: evidencia insuficiente â‡’ FLAG_AMBIGUOUS.
 
 ### 7.3 Sistémicas
 - Replay completo: mismas decisiones de identidad en re-ejecución.
@@ -157,18 +157,18 @@ Todas las decisiones se registran como eventos/metadata append-only.
 
 ---
 
-## 8) Criterios de Aceptación
+## Criterios de Aceptación
 
 Este RFC se considera cumplido cuando:
 1. La identidad interna (`event_id`) es inmutable y no dependiente de la fuente.
-2. La idempotencia es una decisión explícita, no implícita.
+2. La idempotencia es una decisión explí­cita, no implí­cita.
 3. Existe definición formal de linaje como links append-only.
-4. Ambigüedad se preserva como estado válido (no se “arregla”).
+4. Ambigí¼edad se preserva como estado válido (no se “arregla”).
 5. Las decisiones de identidad son reproducibles y versionables.
 
 ---
 
-## 9) Assumptions
+## Assumptions
 
 - Habrá fuentes con IDs pobres o inexistentes.
 - Habrá colisiones reales de referencias externas.

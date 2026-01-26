@@ -1,4 +1,4 @@
-# RFC-09 — IMMUTABLE_LEDGER_WORM
+﻿# RFC-09 — IMMUTABLE_LEDGER_WORM
 **Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
 **Estado:** DRAFT  
 **Relación:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
@@ -8,38 +8,38 @@ RFC-08_EVENT_SOURCING_EVIDENCE
 
 ---
 
-## 1) Propósito
+## Propósito
 
 Definir el **ledger inmutable tipo WORM (Write Once, Read Many)** como sustrato probatorio
 para la evidencia de Tenon, garantizando:
 - no repudio,
 - inalterabilidad verificable,
 - reconstrucción histórica confiable,
-- defensa legal y auditoría forense.
+- defensa legal y auditorí­a forense.
 
-Este RFC fija **propiedades**, no una tecnología específica.
+Este RFC fija **propiedades**, no una tecnologí­a especí­fica.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
-- Elegir proveedor o tecnología concreta (S3 Object Lock, HDFS WORM, blockchain, etc.).
+- Elegir proveedor o tecnologí­a concreta (S3 Object Lock, HDFS WORM, blockchain, etc.).
 - Optimizar costos o latencia.
 - Exponer APIs de consulta.
-- Ejecutar políticas de retención específicas por jurisdicción.
+- Ejecutar polí­ticas de retención especí­ficas por jurisdicción.
 - Reemplazar sistemas regulatorios existentes.
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
 ### 3.1 Inmutabilidad verificable
 - Una vez escrito, un registro **no puede ser modificado ni eliminado** dentro de su periodo de retención.
 - Cualquier intento de mutación debe ser **detectable**.
 
-### 3.2 Append-only físico
+### 3.2 Append-only fí­sico
 - El ledger solo acepta **append**.
-- No existen operaciones UPDATE/DELETE ni “compaction destructiva”.
+- No existen operaciones UPDATE/DELETE ni “compaction destructiva”.
 
 ### 3.3 Identidad y direccionamiento estable
 - Cada entrada del ledger tiene un **identificador estable** y direccionable.
@@ -50,7 +50,7 @@ Este RFC fija **propiedades**, no una tecnología específica.
 - Las entradas forman una **cadena de integridad** (hash encadenado o estructura equivalente).
 
 ### 3.5 Separación de control
-- Ningún componente de Tenon puede:
+- Ningíºn componente de Tenon puede:
   - borrar,
   - truncar,
   - reescribir
@@ -59,7 +59,7 @@ Este RFC fija **propiedades**, no una tecnología específica.
 
 ---
 
-## 4) Contratos (conceptuales)
+## Contratos (conceptuales)
 
 ### 4.1 LedgerEntry
 
@@ -68,7 +68,7 @@ Cada entrada WORM contiene:
 - `ledger_entry_id`
 - `entry_type` (RAW_PAYLOAD | EVIDENCE_EVENT | DERIVED_ARTIFACT | OTHER)
 - `content_hash`
-- `content_pointer` (ubicación física)
+- `content_pointer` (ubicación fí­sica)
 - `schema_version`
 - `previous_entry_hash` (para encadenamiento)
 - `writer_identity`
@@ -84,11 +84,11 @@ Cada entrada WORM contiene:
 - `legal_basis` (AUDIT | CONTRACT | REGULATORY | INTERNAL)
 - `immutable_until`
 
-> La política se **referencia**; el enforcement físico se valida externamente.
+> La polí­tica se **referencia**; el enforcement fí­sico se valida externamente.
 
 ---
 
-## 5) Flujo de escritura (alto nivel)
+## Flujo de escritura (alto nivel)
 
 1. Producción de evidencia (`EvidenceEvent`, crudo, artefactos).
 2. Cálculo de hash criptográfico.
@@ -99,7 +99,7 @@ Cada entrada WORM contiene:
 
 ---
 
-## 6) Threat Model
+## Threat Model
 
 ### 6.1 Amenazas
 - **Borrado retroactivo** para ocultar evidencia.
@@ -113,42 +113,42 @@ Cada entrada WORM contiene:
 - Hash criptográfico + cadena de integridad.
 - Verificación periódica de integridad.
 - Separación de roles (write/read/admin).
-- Auditoría externa del ledger.
+- Auditorí­a externa del ledger.
 
 ---
 
-## 7) Pruebas
+## Pruebas
 
 ### 7.1 Unitarias
-- Escritura única por `ledger_entry_id`.
+- Escritura íºnica por `ledger_entry_id`.
 - Rechazo de escrituras mutables.
 - Validación de hash al leer.
 
 ### 7.2 Propiedades
 - Inmutabilidad: una entrada no cambia entre lecturas.
-- Integridad: alteración ⇒ hash inválido.
+- Integridad: alteración â‡’ hash inválido.
 - Monotonicidad: el ledger solo crece.
 
 ### 7.3 Sistémicas
 - Simulación de intento de borrado/modificación.
 - Verificación de cadena completa de hashes.
 - Recuperación tras fallo parcial.
-- Auditoría cruzada (re-cálculo independiente de hashes).
+- Auditorí­a cruzada (re-cálculo independiente de hashes).
 
 ---
 
-## 8) Criterios de Aceptación
+## Criterios de Aceptación
 
 Este RFC se considera cumplido cuando:
-1. Existe un ledger WORM con append-only físico.
-2. Toda evidencia crítica se escribe en el ledger.
+1. Existe un ledger WORM con append-only fí­sico.
+2. Toda evidencia crí­tica se escribe en el ledger.
 3. La integridad es verificable criptográficamente.
 4. No existe ruta técnica de borrado o reescritura.
-5. El ledger soporta defensa legal y auditoría externa.
+5. El ledger soporta defensa legal y auditorí­a externa.
 
 ---
 
-## 9) Assumptions
+## Assumptions
 
 - La infraestructura WORM puede ser auditada externamente.
 - La latencia adicional es aceptable para evidencia.

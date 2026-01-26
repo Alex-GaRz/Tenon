@@ -1,4 +1,4 @@
-# RFC-11 — ADAPTER_CONTRACTS
+﻿# RFC-11 — ADAPTER_CONTRACTS
 **Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
 **Estado:** DRAFT  
 **Relación:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
@@ -7,32 +7,32 @@ RFC-09_IMMUTABLE_LEDGER_WORM, RFC-10_IDEMPOTENCY_GUARDIAN
 
 ---
 
-## 1) Propósito
+## Propósito
 
 Definir **fronteras estrictas de integración** para que todo sistema externo
 (banco, ERP, PSP, marketplace, ledger interno) se conecte a Tenon **exclusivamente**
-a través de **adaptadores declarativos**, con contratos explícitos y pruebas de conformidad.
+a través de **adaptadores declarativos**, con contratos explí­citos y pruebas de conformidad.
 
 El objetivo institucional es **crecer sin corrupción del core**:
 - los adaptadores **declaran** observaciones,
 - el core **verifica, preserva y diagnostica**,
-- ninguna integración introduce dominio, lógica o semántica propia en el núcleo.
+- ninguna integración introduce dominio, lógica o semántica propia en el níºcleo.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
 - Implementar adaptadores concretos.
 - Resolver autenticación/seguridad de transporte.
 - Optimizar performance o batching.
-- Permitir “shortcuts” directos al core.
+- Permitir “shortcuts” directos al core.
 - Permitir que integraciones modifiquen contratos o reglas canónicas.
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
-### 3.1 Frontera inviolable core ↔ adapters
+### 3.1 Frontera inviolable core â†” adapters
 - El core **no conoce** sistemas externos.
 - Los adaptadores **no ejecutan** lógica de dominio del core.
 - Prohibido que un adaptador:
@@ -42,19 +42,19 @@ El objetivo institucional es **crecer sin corrupción del core**:
 
 ### 3.2 Integraciones como declaraciones, no acciones
 - Un adaptador **declara observaciones** (payload crudo + metadatos).
-- Nunca declara “verdad”, “estado final” ni “resolución”.
+- Nunca declara “verdad”, “estado final” ni “resolución”.
 
 ### 3.3 Contratos obligatorios
 - Todo adaptador debe cumplir contratos definidos en `/contracts`.
-- Sin contrato válido ⇒ la ingesta es rechazada.
+- Sin contrato válido â‡’ la ingesta es rechazada.
 
 ### 3.4 Conformidad verificable
 - Cada adaptador pasa una **conformance suite** canónica.
-- Sin conformidad ⇒ no se despliega ni ingiere.
+- Sin conformidad â‡’ no se despliega ni ingiere.
 
 ---
 
-## 4) Contratos (conceptuales)
+## Contratos (conceptuales)
 
 ### 4.1 AdapterContract (abstracto)
 
@@ -69,7 +69,7 @@ Cada adaptador debe declarar:
 
 ---
 
-### 4.2 IngestDeclaration (interfaz mínima)
+### 4.2 IngestDeclaration (interfaz mí­nima)
 
 Todo adaptador solo puede emitir:
 
@@ -84,7 +84,7 @@ Todo adaptador solo puede emitir:
 **Reglas:**
 - Prohibido emitir `event_type`, `state`, `discrepancy`, `cause`.
 - Prohibido emitir campos derivados del canon.
-- Prohibido “normalizar” o “arreglar” datos.
+- Prohibido “normalizar” o “arreglar” datos.
 
 ---
 
@@ -97,7 +97,7 @@ Todo adaptador solo puede emitir:
 
 ---
 
-## 5) Flujo de integración (alto nivel)
+## Flujo de integración (alto nivel)
 
 1. El adaptador recibe datos del sistema externo.
 2. Preserva el payload crudo sin mutar.
@@ -107,14 +107,14 @@ Todo adaptador solo puede emitir:
    - esquema,
    - idempotencia,
    - append-only.
-5. Si falla la validación ⇒ rechazo con evidencia registrada.
-6. Si pasa ⇒ se continúa con RFC-02 (ingesta).
+5. Si falla la validación â‡’ rechazo con evidencia registrada.
+6. Si pasa â‡’ se continíºa con RFC-02 (ingesta).
 
 ---
 
-## 6) Conformance Suite (obligatoria)
+## Conformance Suite (obligatoria)
 
-Cada adaptador debe pasar un set mínimo de pruebas canónicas:
+Cada adaptador debe pasar un set mí­nimo de pruebas canónicas:
 
 ### 6.1 Pruebas de contrato
 - Cumplimiento de esquema.
@@ -123,29 +123,29 @@ Cada adaptador debe pasar un set mínimo de pruebas canónicas:
 
 ### 6.2 Pruebas de comportamiento
 - No mutación de payload crudo.
-- Reintentos ⇒ idempotencia preservada.
+- Reintentos â‡’ idempotencia preservada.
 - Emisión consistente bajo replay.
 
 ### 6.3 Pruebas negativas
-- Intento de escribir campos canónicos ⇒ rechazado.
-- Intento de ejecutar lógica de dominio ⇒ rechazado.
-- Intento de bypass del Guardian ⇒ detectado.
+- Intento de escribir campos canónicos â‡’ rechazado.
+- Intento de ejecutar lógica de dominio â‡’ rechazado.
+- Intento de bypass del Guardian â‡’ detectado.
 
 Los resultados de la conformance suite son **artefactos auditables**.
 
 ---
 
-## 7) Threat Model
+## Threat Model
 
 ### 7.1 Amenazas
-- **Contaminación del core** por lógica específica de un proveedor.
-- **Integraciones “inteligentes”** que alteran semántica.
+- **Contaminación del core** por lógica especí­fica de un proveedor.
+- **Integraciones “inteligentes”** que alteran semántica.
 - **Cambios silenciosos** en payloads externos.
 - **Bypass contractual** para acelerar integraciones.
 - **Vendor lock-in semántico**.
 
 ### 7.2 Controles exigidos
-- Contratos explícitos y versionados.
+- Contratos explí­citos y versionados.
 - Conformance suite obligatoria.
 - Rechazo por defecto ante desviación.
 - Evidencia de rechazo registrada.
@@ -153,7 +153,7 @@ Los resultados de la conformance suite son **artefactos auditables**.
 
 ---
 
-## 8) Pruebas
+## Pruebas
 
 ### 8.1 Unitarias
 - Validación estricta de esquemas.
@@ -161,30 +161,30 @@ Los resultados de la conformance suite son **artefactos auditables**.
 - Versionado obligatorio.
 
 ### 8.2 Propiedades
-- Determinismo: mismo input ⇒ misma declaración.
+- Determinismo: mismo input â‡’ misma declaración.
 - No side-effects: el adaptador no altera estado del core.
 - Monotonicidad: la historia de integraciones solo crece.
 
 ### 8.3 Sistémicas
-- Integraciones múltiples con contratos distintos.
+- Integraciones míºltiples con contratos distintos.
 - Fallos parciales del adaptador.
 - Replay histórico con adaptadores versionados.
 - Intentos de bypass del contrato.
 
 ---
 
-## 9) Criterios de Aceptación
+## Criterios de Aceptación
 
 Este RFC se considera cumplido cuando:
-1. Ningún adaptador puede introducir dominio o semántica.
-2. Toda integración pasa por contratos explícitos y pruebas de conformidad.
+1. Ningíºn adaptador puede introducir dominio o semántica.
+2. Toda integración pasa por contratos explí­citos y pruebas de conformidad.
 3. El core permanece inalterable ante crecimiento de integraciones.
 4. Las violaciones quedan registradas como evidencia.
-5. La arquitectura soporta auditoría y escalamiento institucional.
+5. La arquitectura soporta auditorí­a y escalamiento institucional.
 
 ---
 
-## 10) Assumptions
+## Assumptions
 
 - Los sistemas externos son inherentemente no confiables.
 - La disciplina de fronteras es más valiosa que la velocidad inicial.

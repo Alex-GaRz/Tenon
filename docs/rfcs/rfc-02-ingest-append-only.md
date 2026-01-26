@@ -1,33 +1,33 @@
-# RFC-02 — INGEST_APPEND_ONLY
+﻿# RFC-02 — INGEST_APPEND_ONLY
 **Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
 **Estado:** DRAFT  
 **Relación:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS
 
 ---
 
-## 1) Propósito
+## Propósito
 
 Definir el **mecanismo de ingesta append-only** de Tenon para garantizar que:
-- ningún dato crudo ni canónico pueda ser borrado o sobrescrito,
+- ningíºn dato crudo ni canónico pueda ser borrado o sobrescrito,
 - toda observación quede preservada como evidencia,
 - la historia sea reproducible punto a punto,
-- cualquier disputa futura pueda reconstruirse sin ambigüedad.
+- cualquier disputa futura pueda reconstruirse sin ambigí¼edad.
 
 Este RFC fija la **frontera de no-retorno**: una vez ingerido, el hecho existe para siempre.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
 - Definir normalización semántica (RFC-03).
 - Definir correlación o matching (RFC-04).
-- Definir ledger WORM físico o firma criptográfica (RFC-09).
+- Definir ledger WORM fí­sico o firma criptográfica (RFC-09).
 - Definir performance, particionado o costos de almacenamiento.
-- Filtrar, deduplicar o “arreglar” datos en ingesta.
+- Filtrar, deduplicar o “arreglar” datos en ingesta.
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
 ### 3.1 Append-only absoluto
 - La ingesta **solo agrega** registros.
@@ -35,16 +35,16 @@ Este RFC fija la **frontera de no-retorno**: una vez ingerido, el hecho existe p
 - Correcciones se expresan como **nuevos eventos** o **nuevos registros de decisión**.
 
 ### 3.2 Preservación del crudo
-- Todo payload crudo ingerido se conserva íntegro.
+- Todo payload crudo ingerido se conserva í­ntegro.
 - Se registra `raw_payload_hash` y un `raw_pointer` estable.
-- El crudo nunca se normaliza “in place”.
+- El crudo nunca se normaliza “in place”.
 
 ### 3.3 Separación de capas
-- **Ingesta ≠ Normalización ≠ Interpretación**.
+- **Ingesta â‰  Normalización â‰  Interpretación**.
 - La ingesta no decide verdad; solo **registra observaciones**.
 
 ### 3.4 Observabilidad temporal
-- Se distinguen explícitamente:
+- Se distinguen explí­citamente:
   - `observed_at` (cuando Tenon observó),
   - `source_timestamp` (cuando la fuente reporta),
   - `ingested_at` (cuando se persiste).
@@ -54,11 +54,11 @@ Este RFC fija la **frontera de no-retorno**: una vez ingerido, el hecho existe p
 - La ingesta debe ser **idempotente a nivel de registro**:
   - reintentos no duplican efectos,
   - duplicados se detectan y se **registran como decisión**, no se silencian.
-- La ingesta jamás “descarta” sin dejar rastro.
+- La ingesta jamás “descarta” sin dejar rastro.
 
 ---
 
-## 4) Contratos (conceptuales)
+## Contratos (conceptuales)
 
 ### 4.1 Registro de ingesta (IngestRecord)
 
@@ -97,7 +97,7 @@ Cada llamada de ingesta produce un `IngestRecord` append-only con:
 
 ---
 
-## 5) Flujo de ingesta (alto nivel)
+## Flujo de ingesta (alto nivel)
 
 1. **Recepción**
    - Llega payload crudo desde adapter.
@@ -105,37 +105,37 @@ Cada llamada de ingesta produce un `IngestRecord` append-only con:
    - Se persiste crudo append-only.
    - Se calcula `raw_payload_hash`.
 3. **Identidad preliminar**
-   - Se evalúa idempotencia (RFC-01A).
+   - Se evalíºa idempotencia (RFC-01A).
 4. **Registro**
-   - Se crea `IngestRecord` con decisión explícita.
+   - Se crea `IngestRecord` con decisión explí­cita.
 5. **Materialización canónica**
    - Si procede, se emite `CanonicalEvent` (append-only).
 6. **Salida**
    - Se devuelve ACK técnico (no semántico).
 
-En ningún punto se elimina información.
+En ningíºn punto se elimina información.
 
 ---
 
-## 6) Threat Model
+## Threat Model
 
 ### 6.1 Amenazas
 - **Reintentos silenciosos** que crean duplicados.
-- **Pérdida de payload crudo** (solo se guarda lo “útil”).
-- **Reescritura posterior** para “limpiar” datos incómodos.
+- **Pérdida de payload crudo** (solo se guarda lo “íºtil”).
+- **Reescritura posterior** para “limpiar” datos incómodos.
 - **Timestamps manipulados** para ocultar latencia o fraude.
 - **Backfills destructivos** que alteran historia.
 
 ### 6.2 Controles exigidos
-- Append-only enforced por diseño.
+- Append-only enforced por diseí±o.
 - Hash del crudo + puntero estable.
-- Registro explícito de decisiones de idempotencia.
+- Registro explí­cito de decisiones de idempotencia.
 - Versionado del protocolo de ingesta.
-- Distinción explícita de timestamps.
+- Distinción explí­cita de timestamps.
 
 ---
 
-## 7) Pruebas
+## Pruebas
 
 ### 7.1 Unitarias
 - Prohibición de UPDATE/DELETE en stores de ingesta.
@@ -143,30 +143,30 @@ En ningún punto se elimina información.
 - Registro obligatorio de `ingest_id`.
 
 ### 7.2 Propiedades
-- Monotonicidad: el número de registros solo crece.
-- Idempotencia: mismo input ⇒ misma decisión.
+- Monotonicidad: el níºmero de registros solo crece.
+- Idempotencia: mismo input â‡’ misma decisión.
 - No colapso temporal: timestamps distintos permanecen distintos.
 
 ### 7.3 Sistémicas
 - Reintentos masivos (simulación de fallos de red).
 - Ingesta fuera de orden temporal.
 - Backfill histórico (meses) sin alterar registros previos.
-- Caída parcial del adapter y recuperación.
+- Caí­da parcial del adapter y recuperación.
 
 ---
 
-## 8) Criterios de Aceptación
+## Criterios de Aceptación
 
 Este RFC se considera cumplido cuando:
 1. La ingesta es estrictamente append-only.
-2. El payload crudo se preserva íntegro y referenciable.
+2. El payload crudo se preserva í­ntegro y referenciable.
 3. Toda ingesta produce un `IngestRecord` verificable.
 4. Las decisiones de idempotencia quedan registradas.
 5. No existe ruta de borrado o sobrescritura lógica.
 
 ---
 
-## 9) Assumptions
+## Assumptions
 
 - El volumen de datos crecerá indefinidamente; la verdad no expira.
 - El costo de almacenamiento es menor que el costo de perder evidencia.

@@ -1,4 +1,4 @@
-# RFC-07 — CAUSALITY_MODEL
+﻿# RFC-07 — CAUSALITY_MODEL
 **Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
 **Estado:** DRAFT  
 **Relación:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
@@ -7,51 +7,51 @@ RFC-05_MONEY_STATE_MACHINE, RFC-06_DISCREPANCY_TAXONOMY
 
 ---
 
-## 1) Propósito
+## Propósito
 
 Definir el **modelo de causalidad explicable** de Tenon para atribuir
 **por qué** ocurre una discrepancia, **dónde** se origina y **qué patrón**
-la explica, sin inferencias implícitas ni heurísticas opacas.
+la explica, sin inferencias implí­citas ni heurí­sticas opacas.
 
 El modelo convierte discrepancias en **explicaciones defendibles**.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
 - Priorizar impacto económico (RFC-08 posterior).
 - Inferir intención, fraude o culpa humana.
 - Ejecutar correcciones automáticas.
-- “Aprender” causalidad sin evidencia registrada.
-- Colapsar múltiples causas en una sola por conveniencia.
+- “Aprender” causalidad sin evidencia registrada.
+- Colapsar míºltiples causas en una sola por conveniencia.
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
 ### 3.1 Causalidad basada en evidencia
 - Toda causa debe estar respaldada por:
   - eventos,
   - estados,
-  - reglas explícitas,
+  - reglas explí­citas,
   - versiones.
 
 ### 3.2 No unicidad forzada
-- Una discrepancia puede tener **múltiples causas plausibles**.
+- Una discrepancia puede tener **míºltiples causas plausibles**.
 - Cada causa se registra por separado, con su evidencia.
 
-### 3.3 Separación causa ↔ severidad
+### 3.3 Separación causa â†” severidad
 - La causalidad explica el **origen**.
 - La severidad/prioridad se define fuera (etapas posteriores).
 
 ### 3.4 Reproducibilidad
-- Misma evidencia + mismas reglas ⇒ mismas causas atribuidas.
+- Misma evidencia + mismas reglas â‡’ mismas causas atribuidas.
 
 ---
 
-## 4) Taxonomía de causas (cerrada)
+## Taxonomí­a de causas (cerrada)
 
-### 4.1 Categorías principales
+### 4.1 Categorí­as principales
 
 - `SOURCE_DELAY`
 - `SOURCE_OMISSION`
@@ -65,11 +65,11 @@ El modelo convierte discrepancias en **explicaciones defendibles**.
 - `UNKNOWN_CAUSE`
 
 **Regla:**  
-Toda causa debe pertenecer a **exactamente una** categoría primaria.
+Toda causa debe pertenecer a **exactamente una** categorí­a primaria.
 
 ---
 
-## 5) Contratos (conceptuales)
+## Contratos (conceptuales)
 
 ### 5.1 CausalityAttribution
 
@@ -84,11 +84,11 @@ Toda causa debe pertenecer a **exactamente una** categoría primaria.
 - `attributed_at`
 - `model_version`
 
-> Una discrepancia puede tener múltiples `CausalityAttribution`.
+> Una discrepancia puede tener míºltiples `CausalityAttribution`.
 
 ---
 
-## 6) Flujo de atribución causal (alto nivel)
+## Flujo de atribución causal (alto nivel)
 
 1. Selección de discrepancia.
 2. Evaluación de reglas causales aplicables.
@@ -100,23 +100,23 @@ Nunca se elimina una causa previamente atribuida.
 
 ---
 
-## 7) Threat Model
+## Threat Model
 
 ### 7.1 Amenazas
-- **Causa única simplista** que oculta complejidad real.
-- **Causalidad implícita** (“porque siempre pasa”).
+- **Causa íºnica simplista** que oculta complejidad real.
+- **Causalidad implí­cita** (“porque siempre pasa”).
 - **Cambios retroactivos** que reescriben explicación histórica.
-- **Confusión causa ↔ síntoma**.
+- **Confusión causa â†” sí­ntoma**.
 
 ### 7.2 Controles exigidos
 - Enum cerrado y versionado.
-- Evidencia explícita por causa.
-- Posibilidad de múltiples causas.
+- Evidencia explí­cita por causa.
+- Posibilidad de míºltiples causas.
 - Versionado del modelo causal.
 
 ---
 
-## 8) Pruebas
+## Pruebas
 
 ### 8.1 Unitarias
 - Toda causa tiene tipo válido.
@@ -124,30 +124,30 @@ Nunca se elimina una causa previamente atribuida.
 - Rechazo de causas fuera del enum.
 
 ### 8.2 Propiedades
-- Determinismo: replay ⇒ mismas causas.
-- No colapso: múltiples causas se preservan.
-- Conservadurismo: evidencia débil ⇒ `UNKNOWN_CAUSE`.
+- Determinismo: replay â‡’ mismas causas.
+- No colapso: míºltiples causas se preservan.
+- Conservadurismo: evidencia débil â‡’ `UNKNOWN_CAUSE`.
 
 ### 8.3 Sistémicas
-- Discrepancias complejas con múltiples fuentes.
+- Discrepancias complejas con míºltiples fuentes.
 - Evidencia parcial o contradictoria.
 - Replay histórico completo.
 
 ---
 
-## 9) Criterios de Aceptación
+## Criterios de Aceptación
 
 Este RFC se considera cumplido cuando:
-1. La causalidad es explícita, versionada y reproducible.
-2. Múltiples causas pueden coexistir sin colapsarse.
+1. La causalidad es explí­cita, versionada y reproducible.
+2. Míºltiples causas pueden coexistir sin colapsarse.
 3. Toda causa tiene evidencia y explicación estructurada.
-4. La atribución evita inferencias implícitas.
-5. El modelo resiste auditoría y revisión legal.
+4. La atribución evita inferencias implí­citas.
+5. El modelo resiste auditorí­a y revisión legal.
 
 ---
 
-## 10) Assumptions
+## Assumptions
 
-- Las causas reales no siempre son únicas ni simples.
+- Las causas reales no siempre son íºnicas ni simples.
 - Es preferible explicar incertidumbre que inventar certeza.
 - La causalidad es diagnóstica, no punitiva.

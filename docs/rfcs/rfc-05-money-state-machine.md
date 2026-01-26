@@ -1,23 +1,23 @@
-# RFC-05 — MONEY_STATE_MACHINE
+﻿# RFC-05 — MONEY_STATE_MACHINE
 **Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
 **Estado:** DRAFT  
 **Relación:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS, RFC-02_INGEST_APPEND_ONLY, RFC-03_NORMALIZATION_RULES, RFC-04_CORRELATION_ENGINE
 
 ---
 
-## 1) Propósito
+## Propósito
 
 Definir la **máquina de estados del dinero** de Tenon para:
 - diagnosticar la situación operativa de flujos monetarios,
 - separar observación de inferencia,
 - producir estados explicables, reproducibles y auditables,
-- evitar “match/no-match” simplista.
+- evitar “match/no-match” simplista.
 
 Esta máquina **no ejecuta dinero** ni corrige sistemas externos: **diagnostica**.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
 - Ejecutar pagos, reembolsos o compensaciones.
 - Reemplazar contabilidad oficial o subledgers.
@@ -27,17 +27,17 @@ Esta máquina **no ejecuta dinero** ni corrige sistemas externos: **diagnostica*
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
 ### 3.1 Estados como diagnóstico, no como verdad absoluta
 - Un estado expresa **lo que se observa dado el conjunto de evidencia disponible**.
 - Estados pueden evolucionar con nueva evidencia; la historia **no se borra**.
 
 ### 3.2 Determinismo y versionado
-- Misma evidencia + misma versión ⇒ mismo estado.
+- Misma evidencia + misma versión â‡’ mismo estado.
 - Cambios en reglas generan **nueva versión de estado**, no reescritura.
 
-### 3.3 Separación evento ↔ estado
+### 3.3 Separación evento â†” estado
 - `CanonicalEvent` es un hecho observado.
 - `MoneyState` es una inferencia **derivada**.
 - Prohibido almacenar estado dentro del evento.
@@ -50,11 +50,11 @@ Esta máquina **no ejecuta dinero** ni corrige sistemas externos: **diagnostica*
 
 ---
 
-## 4) Estados canónicos
+## Estados canónicos
 
-### 4.1 Conjunto mínimo (cerrado)
+### 4.1 Conjunto mí­nimo (cerrado)
 
-- `EXPECTED` — se espera movimiento según contrato/flujo observado.
+- `EXPECTED` — se espera movimiento segíºn contrato/flujo observado.
 - `INITIATED` — intención registrada (p.ej., payment initiated).
 - `AUTHORIZED` — autorización observada.
 - `IN_TRANSIT` — dinero en tránsito entre sistemas.
@@ -72,7 +72,7 @@ Esta máquina **no ejecuta dinero** ni corrige sistemas externos: **diagnostica*
 
 ---
 
-## 5) Contratos (conceptuales)
+## Contratos (conceptuales)
 
 ### 5.1 MoneyState
 
@@ -99,38 +99,38 @@ Cada transición debe declarar:
 
 ---
 
-## 6) Lógica de evaluación (alto nivel)
+## Lógica de evaluación (alto nivel)
 
 1. **Recolección de evidencia**
    - Eventos + correlaciones relevantes al flujo.
 2. **Evaluación de reglas**
-   - Se evalúan transiciones posibles.
+   - Se evalíºan transiciones posibles.
 3. **Selección conservadora**
-   - Si múltiples estados son plausibles ⇒ `AMBIGUOUS`.
+   - Si míºltiples estados son plausibles â‡’ `AMBIGUOUS`.
 4. **Emisión**
    - Se registra `MoneyState` append-only con explicación.
 
-Nunca se “fuerza” un estado final si la evidencia no lo permite.
+Nunca se “fuerza” un estado final si la evidencia no lo permite.
 
 ---
 
-## 7) Threat Model
+## Threat Model
 
 ### 7.1 Amenazas
 - **Estados optimistas** que ocultan riesgo (marcar SETTLED sin evidencia).
-- **Colapso temporal** (ignorar eventos tardíos).
+- **Colapso temporal** (ignorar eventos tardí­os).
 - **Reescritura silenciosa** de estados pasados.
-- **Dependencia implícita** de reglas no versionadas.
+- **Dependencia implí­cita** de reglas no versionadas.
 
 ### 7.2 Controles exigidos
 - Estados y transiciones versionadas.
-- Evidencia explícita por estado.
+- Evidencia explí­cita por estado.
 - `AMBIGUOUS` como estado válido.
 - Registro append-only de evaluaciones.
 
 ---
 
-## 8) Pruebas
+## Pruebas
 
 ### 8.1 Unitarias
 - Transiciones inválidas son rechazadas.
@@ -138,31 +138,31 @@ Nunca se “fuerza” un estado final si la evidencia no lo permite.
 - `AMBIGUOUS` se emite ante evidencia conflictiva.
 
 ### 8.2 Propiedades
-- Determinismo: replay ⇒ mismos estados.
+- Determinismo: replay â‡’ mismos estados.
 - Monotonicidad: nuevas evaluaciones no borran estados previos.
-- Conservadurismo: ante duda ⇒ no “final”.
+- Conservadurismo: ante duda â‡’ no “final”.
 
 ### 8.3 Sistémicas
 - Eventos fuera de orden.
-- Evidencia tardía que cambia diagnóstico.
+- Evidencia tardí­a que cambia diagnóstico.
 - Flujos incompletos o contradictorios.
 - Replay histórico completo.
 
 ---
 
-## 9) Criterios de Aceptación
+## Criterios de Aceptación
 
 Este RFC se considera cumplido cuando:
-1. Existe una máquina de estados cerrada y explícita.
+1. Existe una máquina de estados cerrada y explí­cita.
 2. Estados se derivan solo de evidencia registrada.
 3. Toda transición es explicable y versionada.
-4. Ambigüedad y desconocimiento son estados válidos.
+4. Ambigí¼edad y desconocimiento son estados válidos.
 5. La historia de estados es reproducible y auditable.
 
 ---
 
-## 10) Assumptions
+## Assumptions
 
-- La realidad financiera es asíncrona e incompleta.
+- La realidad financiera es así­ncrona e incompleta.
 - El costo de marcar AMBIGUOUS es menor que el de afirmar falsamente SETTLED.
 - La máquina de estados es diagnóstica, no ejecutora.
