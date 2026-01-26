@@ -1,0 +1,142 @@
+{
+  "threshold_set_id": "FIXTURE_THRESHOLD_V1",
+  "threshold_set_version": "1.0.0",
+  "approved_change_ref": "CHANGE_CONTROL_RFC12_2026_001",
+  "rules": [
+    {
+      "signal_type": "DISCREPANCY_CONCENTRATION_HIGH_BY_SOURCE",
+      "scope": "SOURCE",
+      "metric_key": "discrepancy_concentration_pct",
+      "severity_mapping": [
+        {
+          "threshold_value": 5.0,
+          "severity_level": "LOW",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 10.0,
+          "severity_level": "MEDIUM",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 20.0,
+          "severity_level": "HIGH",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 40.0,
+          "severity_level": "CRITICAL",
+          "operator": "GTE"
+        }
+      ],
+      "description": "Concentración de discrepancias HIGH por fuente"
+    },
+    {
+      "signal_type": "CORRELATION_CONFIDENCE_SCORE_DEGRADATION",
+      "scope": "GLOBAL",
+      "metric_key": "avg_confidence_score",
+      "severity_mapping": [
+        {
+          "threshold_value": 0.8,
+          "severity_level": "LOW",
+          "operator": "LT"
+        },
+        {
+          "threshold_value": 0.7,
+          "severity_level": "MEDIUM",
+          "operator": "LT"
+        },
+        {
+          "threshold_value": 0.6,
+          "severity_level": "HIGH",
+          "operator": "LT"
+        },
+        {
+          "threshold_value": 0.5,
+          "severity_level": "CRITICAL",
+          "operator": "LT"
+        }
+      ],
+      "description": "Degradación del confidence score promedio"
+    },
+    {
+      "signal_type": "STATE_AMBIGUOUS_ACCUMULATION_OUTSIDE_SLA",
+      "scope": "GLOBAL",
+      "metric_key": "ambiguous_state_count",
+      "severity_mapping": [
+        {
+          "threshold_value": 10,
+          "severity_level": "MEDIUM",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 50,
+          "severity_level": "HIGH",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 100,
+          "severity_level": "CRITICAL",
+          "operator": "GTE"
+        }
+      ],
+      "description": "Acumulación de estados AMBIGUOUS fuera de SLA"
+    },
+    {
+      "signal_type": "IDEMPOTENCY_REJECT_DUPLICATE_INCREASE",
+      "scope": "GLOBAL",
+      "metric_key": "reject_duplicate_rate_pct",
+      "severity_mapping": [
+        {
+          "threshold_value": 1.0,
+          "severity_level": "LOW",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 5.0,
+          "severity_level": "MEDIUM",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 15.0,
+          "severity_level": "HIGH",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 30.0,
+          "severity_level": "CRITICAL",
+          "operator": "GTE"
+        }
+      ],
+      "description": "Incremento de REJECT_DUPLICATE"
+    },
+    {
+      "signal_type": "IDEMPOTENCY_FLAG_AMBIGUOUS_INCREASE",
+      "scope": "GLOBAL",
+      "metric_key": "flag_ambiguous_rate_pct",
+      "severity_mapping": [
+        {
+          "threshold_value": 2.0,
+          "severity_level": "LOW",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 8.0,
+          "severity_level": "MEDIUM",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 20.0,
+          "severity_level": "HIGH",
+          "operator": "GTE"
+        },
+        {
+          "threshold_value": 40.0,
+          "severity_level": "CRITICAL",
+          "operator": "GTE"
+        }
+      ],
+      "description": "Incremento de FLAG_AMBIGUOUS"
+    }
+  ]
+}

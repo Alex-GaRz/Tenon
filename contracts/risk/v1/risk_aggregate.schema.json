@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.internal/schemas/risk/v1/risk_aggregate.schema.json",
+  "title": "RiskAggregate",
+  "description": "Riesgo agregado por ventana temporal - RFC-13 §5.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "aggregate_id",
+    "time_window",
+    "risk_profile",
+    "overall_risk_level",
+    "drivers",
+    "computed_at",
+    "model_version"
+  ],
+  "properties": {
+    "aggregate_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identificador único del agregado"
+    },
+    "time_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_at", "end_at"],
+      "properties": {
+        "start_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Inicio de la ventana temporal"
+        },
+        "end_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Fin de la ventana temporal"
+        }
+      },
+      "description": "Ventana temporal del agregado"
+    },
+    "risk_profile": {
+      "type": "array",
+      "description": "Vector de señales de riesgo en la ventana",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["risk_signal_id", "signal_type", "severity_level"],
+        "properties": {
+          "risk_signal_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "signal_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity_level": {
+            "type": "string",
+            "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+          }
+        }
+      }
+    },
+    "overall_risk_level": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+      "description": "Nivel de riesgo global del agregado (max severity)"
+    },
+    "drivers": {
+      "type": "array",
+      "description": "IDs de señales que conducen el overall_risk_level (deben existir en risk_profile)",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "computed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp de cómputo del agregado (determinista = time_window.end_at)"
+    },
+    "model_version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Versión del modelo de agregación (gobernanza)"
+    }
+  }
+}

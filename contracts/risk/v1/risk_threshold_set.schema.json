@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.internal/schemas/risk/v1/risk_threshold_set.schema.json",
+  "title": "RiskThresholdSet",
+  "description": "Umbrales institucionales explícitos y versionados - RFC-13 §6",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "threshold_set_id",
+    "threshold_set_version",
+    "approved_change_ref",
+    "rules"
+  ],
+  "properties": {
+    "threshold_set_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identificador del conjunto de umbrales"
+    },
+    "threshold_set_version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Versión del conjunto de umbrales (gobernanza)"
+    },
+    "approved_change_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Referencia a change control (RFC-12) que aprueba estos umbrales"
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Reglas de umbral por tipo de señal y alcance",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "signal_type",
+          "scope",
+          "metric_key",
+          "severity_mapping"
+        ],
+        "properties": {
+          "signal_type": {
+            "type": "string",
+            "enum": [
+              "DISCREPANCY_CONCENTRATION_HIGH_BY_SOURCE",
+              "DISCREPANCY_CONCENTRATION_HIGH_BY_TYPE",
+              "DISCREPANCY_CONCENTRATION_HIGH_BY_FLOW",
+              "DISCREPANCY_TEMPORAL_TREND_CRITICAL",
+              "DISCREPANCY_AVERAGE_AGE_UNRESOLVED",
+              "CORRELATION_CONFIDENCE_SCORE_DEGRADATION",
+              "CORRELATION_AMBIGUOUS_INCREASE_BY_FLOW",
+              "CORRELATION_ORPHAN_EVENT_GROWTH",
+              "STATE_AMBIGUOUS_ACCUMULATION_OUTSIDE_SLA",
+              "STATE_UNKNOWN_ACCUMULATION_OUTSIDE_SLA",
+              "STATE_IN_TRANSIT_ACCUMULATION_OUTSIDE_SLA",
+              "STATE_STALE_FLOWS_NO_EVOLUTION",
+              "STATE_DIVERGENCE_EXPECTED_VS_OBSERVED",
+              "IDEMPOTENCY_REJECT_DUPLICATE_INCREASE",
+              "IDEMPOTENCY_FLAG_AMBIGUOUS_INCREASE",
+              "IDEMPOTENCY_KEY_COLLISION_RECURRENT",
+              "IDEMPOTENCY_GUARDIAN_BYPASS_OR_FAILURE",
+              "CHANGE_IMPACT_ON_CORRELATION",
+              "CHANGE_IMPACT_ON_STATES",
+              "CHANGE_IMPACT_ON_DISCREPANCIES",
+              "CHANGE_VERSION_COEXISTENCE_DIVERGENT_RESULTS",
+              "CHANGE_DISCREPANCY_INCREASE_POST_CHANGE",
+              "HUMAN_INTERVENTION_OVERUSE",
+              "HUMAN_DISCREPANCY_REOPENING_RECURRENT",
+              "HUMAN_OVERRIDE_DEPENDENCY"
+            ],
+            "description": "Tipo de señal (taxonomía cerrada RFC-13 §4)"
+          },
+          "scope": {
+            "type": "string",
+            "enum": ["GLOBAL", "SOURCE", "FLOW", "COMPONENT"],
+            "description": "Alcance de aplicación del umbral"
+          },
+          "metric_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Clave de la métrica derivada a evaluar"
+          },
+          "severity_mapping": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Mapeo ordenado de umbrales a severidad (ascendente)",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["threshold_value", "severity_level", "operator"],
+              "properties": {
+                "threshold_value": {
+                  "type": "number",
+                  "description": "Valor umbral para esta severidad"
+                },
+                "severity_level": {
+                  "type": "string",
+                  "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+                  "description": "Nivel de severidad si se cumple el umbral"
+                },
+                "operator": {
+                  "type": "string",
+                  "enum": ["GT", "GTE", "LT", "LTE", "EQ"],
+                  "description": "Operador de comparación (GT=greater than, etc.)"
+                }
+              }
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "Descripción opcional de la regla"
+          }
+        }
+      }
+    }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "properties": {
+          "auto_tune": {}
+        },
+        "required": ["auto_tune"]
+      },
+      {
+        "properties": {
+          "learning": {}
+        },
+        "required": ["learning"]
+      },
+      {
+        "properties": {
+          "adaptive": {}
+        },
+        "required": ["adaptive"]
+      }
+    ]
+  }
+}

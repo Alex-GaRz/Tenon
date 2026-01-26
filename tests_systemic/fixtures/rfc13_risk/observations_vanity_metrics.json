@@ -1,0 +1,59 @@
+{
+  "observations": [
+    {
+      "metric_key": "cpu_usage_pct",
+      "metric_value": 85.0,
+      "scope": "GLOBAL",
+      "scope_key": "SYSTEM",
+      "observed_at": "2026-01-25T10:00:00Z",
+      "evidence_refs": [
+        "INFRA_MONITORING_CPU_001"
+      ],
+      "risk_mapping": "CPU usage alto (MÉTRICA PROHIBIDA - debe ser rechazada)"
+    },
+    {
+      "metric_key": "ram_used_mb",
+      "metric_value": 8192,
+      "scope": "GLOBAL",
+      "scope_key": "SYSTEM",
+      "observed_at": "2026-01-25T10:00:00Z",
+      "evidence_refs": [
+        "INFRA_MONITORING_RAM_001"
+      ],
+      "risk_mapping": "RAM usage (MÉTRICA PROHIBIDA - debe ser rechazada)"
+    },
+    {
+      "metric_key": "latency_p99_ms",
+      "metric_value": 350,
+      "scope": "COMPONENT",
+      "scope_key": "API_GATEWAY",
+      "observed_at": "2026-01-25T10:00:00Z",
+      "evidence_refs": [
+        "INFRA_MONITORING_LATENCY_001"
+      ],
+      "risk_mapping": "Latency P99 (MÉTRICA PROHIBIDA - debe ser rechazada)"
+    },
+    {
+      "metric_key": "qps",
+      "metric_value": 5000,
+      "scope": "GLOBAL",
+      "scope_key": "SYSTEM",
+      "observed_at": "2026-01-25T10:00:00Z",
+      "evidence_refs": [
+        "INFRA_MONITORING_QPS_001"
+      ],
+      "risk_mapping": "Queries per second (MÉTRICA PROHIBIDA - debe ser rechazada)"
+    },
+    {
+      "metric_key": "throughput_mbps",
+      "metric_value": 100,
+      "scope": "GLOBAL",
+      "scope_key": "NETWORK",
+      "observed_at": "2026-01-25T10:00:00Z",
+      "evidence_refs": [
+        "INFRA_MONITORING_THROUGHPUT_001"
+      ],
+      "risk_mapping": "Throughput de red (MÉTRICA PROHIBIDA - debe ser rechazada)"
+    }
+  ]
+}

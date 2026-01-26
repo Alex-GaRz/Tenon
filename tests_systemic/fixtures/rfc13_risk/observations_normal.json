@@ -1,0 +1,49 @@
+{
+  "observations": [
+    {
+      "metric_key": "discrepancy_concentration_pct",
+      "metric_value": 2.5,
+      "scope": "SOURCE",
+      "scope_key": "SAP_FINANCE",
+      "observed_at": "2026-01-25T10:00:00Z",
+      "evidence_refs": [
+        "WORM_NORMAL_SAP_001",
+        "WORM_NORMAL_SAP_002"
+      ],
+      "risk_mapping": "Concentración normal de discrepancias en SAP Finance (< 5% threshold)"
+    },
+    {
+      "metric_key": "avg_confidence_score",
+      "metric_value": 0.92,
+      "scope": "GLOBAL",
+      "scope_key": "SYSTEM",
+      "observed_at": "2026-01-25T10:00:00Z",
+      "evidence_refs": [
+        "EVENT_SOURCING_CORRELATION_001"
+      ],
+      "risk_mapping": "Confianza alta en correlación global (> 0.8 threshold)"
+    },
+    {
+      "metric_key": "ambiguous_state_count",
+      "metric_value": 3,
+      "scope": "GLOBAL",
+      "scope_key": "SYSTEM",
+      "observed_at": "2026-01-25T10:00:00Z",
+      "evidence_refs": [
+        "STATE_MACHINE_SNAPSHOT_001"
+      ],
+      "risk_mapping": "Pocos estados ambiguos en el sistema (< 10 threshold)"
+    },
+    {
+      "metric_key": "reject_duplicate_rate_pct",
+      "metric_value": 0.3,
+      "scope": "GLOBAL",
+      "scope_key": "SYSTEM",
+      "observed_at": "2026-01-25T10:00:00Z",
+      "evidence_refs": [
+        "IDEMPOTENCY_GUARDIAN_LOG_001"
+      ],
+      "risk_mapping": "Tasa normal de rechazo de duplicados (< 1% threshold)"
+    }
+  ]
+}
