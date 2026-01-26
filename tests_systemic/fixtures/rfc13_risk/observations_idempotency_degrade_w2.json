@@ -1,0 +1,28 @@
+{
+  "observations": [
+    {
+      "metric_key": "reject_duplicate_rate_pct",
+      "metric_value": 7.0,
+      "scope": "GLOBAL",
+      "scope_key": "SYSTEM",
+      "observed_at": "2026-01-25T11:00:00Z",
+      "evidence_refs": [
+        "WORM_IDEMPOTENCY_W2_001",
+        "WORM_IDEMPOTENCY_W2_002",
+        "WORM_IDEMPOTENCY_W2_003"
+      ],
+      "risk_mapping": "Escalamiento a MEDIUM: REJECT_DUPLICATE en ventana 2"
+    },
+    {
+      "metric_key": "flag_ambiguous_rate_pct",
+      "metric_value": 10.0,
+      "scope": "GLOBAL",
+      "scope_key": "SYSTEM",
+      "observed_at": "2026-01-25T11:00:00Z",
+      "evidence_refs": [
+        "WORM_IDEMPOTENCY_W2_004"
+      ],
+      "risk_mapping": "Escalamiento a MEDIUM: FLAG_AMBIGUOUS en ventana 2"
+    }
+  ]
+}
