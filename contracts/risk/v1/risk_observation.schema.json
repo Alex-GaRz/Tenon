@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tenon.internal/schemas/risk/v1/risk_observation.schema.json",
+  "title": "RiskObservation",
+  "description": "Observaciones derivadas (input del core de riesgo) - RFC-13 §3.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["observations"],
+  "properties": {
+    "observations": {
+      "type": "array",
+      "minItems": 0,
+      "description": "Array de observaciones derivadas de estados/discrepancias/causalidad/idempotencia/cambios",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "metric_key",
+          "metric_value",
+          "scope",
+          "scope_key",
+          "observed_at",
+          "evidence_refs",
+          "risk_mapping"
+        ],
+        "properties": {
+          "metric_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Clave de la métrica derivada",
+            "not": {
+              "pattern": "(?i)(cpu|ram|memory|latency|qps|throughput|bandwidth|disk|io_wait|load_avg|network)"
+            }
+          },
+          "metric_value": {
+            "type": "number",
+            "description": "Valor observado de la métrica"
+          },
+          "scope": {
+            "type": "string",
+            "enum": ["GLOBAL", "SOURCE", "FLOW", "COMPONENT"],
+            "description": "Alcance de la observación"
+          },
+          "scope_key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Identificador del alcance (nombre de fuente/flujo/componente)"
+          },
+          "observed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp de la observación (inyectado)"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Punteros a evidencia inmutable (WORM, event sourcing, etc.)",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "risk_mapping": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Explicación de por qué esta observación representa riesgo institucional"
+          },
+          "context": {
+            "type": "object",
+            "description": "Contexto adicional opcional (metadatos, SLA, baseline, etc.)"
+          }
+        }
+      }
+    }
+  }
+}
