@@ -5,7 +5,7 @@
 
 ---
 
-## 1) Propósito
+## Propósito
 
 Definir el **único objeto canónico** del sistema: `CanonicalEvent`.
 
@@ -20,7 +20,7 @@ Tenon no concilia “formatos”; concilia **eventos canónicos**.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
 - Definir reglas de correlación (eso pertenece a RFC-04).
 - Definir máquina de estados del dinero (RFC-05).
@@ -31,7 +31,7 @@ Tenon no concilia “formatos”; concilia **eventos canónicos**.
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
 ### 3.1 Unicidad del canon
 - Existe **un solo** tipo de objeto canónico: `CanonicalEvent`.
@@ -63,7 +63,7 @@ Tenon no concilia “formatos”; concilia **eventos canónicos**.
 
 ---
 
-## 4) Contratos (definición canónica)
+## Contratos (definición canónica)
 
 ### 4.1 Estructura conceptual (campos)
 `CanonicalEvent` contiene, como mínimo, los siguientes campos conceptuales:
@@ -133,7 +133,7 @@ El enum `event_type` debe ser cerrado y contener, como mínimo:
 
 ---
 
-## 5) Threat Model
+## Threat Model
 
 ### 5.1 Amenazas
 - **Contaminación semántica:** adaptadores inyectan “interpretación” (FX, impuestos, contabilidad).
@@ -150,7 +150,7 @@ El enum `event_type` debe ser cerrado y contener, como mínimo:
 
 ---
 
-## 6) Pruebas
+## Pruebas
 
 ### 6.1 Unitarias
 - Validación de presencia de campos obligatorios.
@@ -170,7 +170,7 @@ El enum `event_type` debe ser cerrado y contener, como mínimo:
 
 ---
 
-## 7) Criterios de Aceptación
+## Criterios de Aceptación
 
 Este RFC se considera cumplido cuando:
 1. Existe definición única de `CanonicalEvent` con campos mínimos y ontología cerrada.
@@ -182,7 +182,7 @@ Este RFC se considera cumplido cuando:
 
 ---
 
-## 8) Assumptions
+## Assumptions
 
 - No siempre existirá `source_event_id` o `external_reference`; el sistema debe tolerarlo sin inventar.
 - Algunas fuentes proveerán datos incompletos o incoherentes; el canon prioriza evidencia y trazabilidad.

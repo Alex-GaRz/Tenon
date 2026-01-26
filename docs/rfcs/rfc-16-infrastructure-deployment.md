@@ -25,7 +25,7 @@ Este RFC **NO**:
 
 ---
 
-## Invariantes (No negociables)
+## Invariantes
 
 1. **Inmutabilidad de Artefactos**
 

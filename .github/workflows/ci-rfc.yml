@@ -12,35 +12,32 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Ensure RFC index exists
-        # El estándar ahora exige que sea README.md en la nueva ruta
+        # El estándar exige README.md en la nueva ruta
         run: test -f docs/rfcs/README.md
 
       - name: Enforce RFC filename convention
         run: |
           set -e
-          # Buscamos archivos inválidos en la nueva ruta
-          # Permite: RFC-00_MANIFEST.md (excepción) y rfc-nn-nombre.md (minúsculas)
+          # Permite RFC-00_MANIFEST.md (Mayúsculas) y rfc-nn-nombre.md (Minúsculas)
           bad=$(find docs/rfcs -maxdepth 1 -type f -name "*.md" \
             ! -name "README.md" \
             ! -name "RFC-00_MANIFEST.md" \
             ! -regex ".*/rfc-[0-9][0-9][a-z]?-.*\.md" \
             -print)
-          
           if [ -n "$bad" ]; then
-            echo "Error: Los archivos RFC deben seguir el formato 'rfc-nn-nombre.md' (minúsculas)."
-            echo "Archivos inválidos encontrados:"
-            echo "$bad"
+            echo "Invalid RFC filename(s): $bad"
             exit 1
           fi
 
       - name: Require RFC template sections (minimum)
         run: |
           set -e
-          # Validamos secciones en todos los archivos .md de docs/rfcs/ (excepto el índice)
           for f in $(find docs/rfcs -maxdepth 1 -type f -name "*.md" ! -name "README.md"); do
-            echo "Validating sections in: $f"
-            grep -q "## Propósito" "$f" || (echo "Falta sección '## Propósito' en $f"; exit 1)
-            # Nota: Si los RFCs aún no tienen todas las secciones, puedes comentar las líneas de abajo temporalmente
-            grep -q "## No-Goals" "$f" || echo "Warning: Falta No-Goals en $f"
-            grep -q "## Invariantes" "$f" || echo "Warning: Falta Invariantes en $f"
+            echo "Validating $f..."
+            grep -q "^## Propósito" "$f"
+            grep -q "^## No-Goals" "$f"
+            grep -q "^## Invariantes" "$f"
+            grep -q "^## Threat Model" "$f"
+            grep -q "^## Pruebas" "$f"
+            grep -q "^## Criterios de Aceptación" "$f"
           done

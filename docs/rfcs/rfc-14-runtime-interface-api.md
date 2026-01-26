@@ -21,7 +21,7 @@ Este RFC **NO**:
 
 ---
 
-## Invariantes (No negociables)
+## Invariantes
 
 1. **Contract-First**
 
