@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Ensure RFC index exists
-        run: test -f rfc/RFC-INDEX.md
+        run: test -f docs/rfcs/README.md
 
       - name: Enforce RFC filename convention
         run: |
