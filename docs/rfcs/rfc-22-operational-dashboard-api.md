@@ -1,8 +1,8 @@
-# RFC-22 — Operational Dashboard API (DRAFT)
+﻿# RFC-22 â€” Operational Dashboard API (DRAFT)
 
-## Propósito
+## PropÃ³sito
 
-Proveer una **API especializada de visualización operativa y ejecutiva** que expone el **estado financiero y técnico institucional** de TENON de forma:
+Proveer una **API especializada de visualizaciÃ³n operativa y ejecutiva** que expone el **estado financiero y tÃ©cnico institucional** de TENON de forma:
 
 * **solo lectura**,
 * **pre-agregada**,
@@ -20,7 +20,7 @@ Este RFC **NO**:
 * Modifica datos, reglas o estados.
 * Expone eventos crudos o millones de registros.
 * Reemplaza sistemas BI corporativos.
-* Introduce métricas técnicas (CPU, RAM, QPS).
+* Introduce mÃ©tricas tÃ©cnicas (CPU, RAM, QPS).
 * Define frontend o UX.
 
 ---
@@ -29,32 +29,32 @@ Este RFC **NO**:
 
 1. **Solo Lectura**
 
-   * Ningún endpoint permite mutación.
+   * NingÃºn endpoint permite mutaciÃ³n.
    * Prohibidos POST/PUT/PATCH/DELETE.
 
-2. **Agregación Institucional**
+2. **AgregaciÃ³n Institucional**
 
    * Respuestas **pre-agregadas** y acotadas.
    * Nunca dumps de datos crudos.
 
 3. **Coherencia con Evidencia**
 
-   * Toda métrica se deriva de:
+   * Toda mÃ©trica se deriva de:
 
      * estados,
      * discrepancias,
      * riesgo,
      * evidencia persistida.
-   * No inferencias “en tiempo real” sin respaldo.
+   * No inferencias â€œen tiempo realâ€ sin respaldo.
 
 4. **Determinismo**
 
-   * Mismo rango temporal + misma versión ⇒ mismo resultado.
+   * Mismo rango temporal + misma versiÃ³n â‡’ mismo resultado.
 
 5. **Aislamiento del Core**
 
    * La API consume **read models**.
-   * No accede a lógica core ni escribe en persistencia.
+   * No accede a lÃ³gica core ni escribe en persistencia.
 
 ---
 
@@ -68,20 +68,20 @@ Este RFC **NO**:
 Gobernados por:
 
 * RFC-12 (versionado)
-* RFC-13 (señales de riesgo)
+* RFC-13 (seÃ±ales de riesgo)
 
 ---
 
-## Diseño Técnico
+## DiseÃ±o TÃ©cnico
 
 ### Estilo de API
 
 * **REST**
 * **OpenAPI 3.1**
-* Versionado explícito: `/v1/dashboard/*`
+* Versionado explÃ­cito: `/v1/dashboard/*`
 * JSON estrictamente tipado
 
-### Autenticación
+### AutenticaciÃ³n
 
 * Hereda mecanismos de RFC-14:
 
@@ -97,7 +97,7 @@ Gobernados por:
 
   * PostgreSQL (hot data agregada)
   * snapshots derivados (no crudos)
-* Actualización:
+* ActualizaciÃ³n:
 
   * incremental
   * determinista
@@ -105,11 +105,11 @@ Gobernados por:
 
 ---
 
-## Endpoints Canónicos
+## Endpoints CanÃ³nicos
 
 ### `GET /v1/dashboard/risk-matrix`
 
-**Propósito**
+**PropÃ³sito**
 Exponer la **matriz de calor de riesgo institucional**.
 
 **Contenido**
@@ -118,19 +118,19 @@ Exponer la **matriz de calor de riesgo institucional**.
 
   * tipo,
   * severidad,
-  * antigüedad,
-  * impacto económico.
+  * antigÃ¼edad,
+  * impacto econÃ³mico.
 
 **Fuente**
 
-* Señales RFC-13 agregadas.
+* SeÃ±ales RFC-13 agregadas.
 
 ---
 
 ### `GET /v1/dashboard/flow-lineage/{id}`
 
-**Propósito**
-Visualizar la **trazabilidad completa** de un flujo de dinero específico.
+**PropÃ³sito**
+Visualizar la **trazabilidad completa** de un flujo de dinero especÃ­fico.
 
 **Contenido**
 
@@ -138,19 +138,19 @@ Visualizar la **trazabilidad completa** de un flujo de dinero específico.
 
   * nodos (eventos)
   * aristas (correlaciones)
-* Estados históricos
+* Estados histÃ³ricos
 * Evidencia asociada (referencias, no payloads)
 
-**Garantía**
+**GarantÃ­a**
 
-* La vista es una **proyección**, no el core.
+* La vista es una **proyecciÃ³n**, no el core.
 
 ---
 
 ### `GET /v1/dashboard/discrepancy-trend`
 
-**Propósito**
-Mostrar la **evolución temporal de discrepancias**.
+**PropÃ³sito**
+Mostrar la **evoluciÃ³n temporal de discrepancias**.
 
 **Agregaciones**
 
@@ -167,8 +167,8 @@ Mostrar la **evolución temporal de discrepancias**.
 
 | Escenario            | Respuesta       |
 | -------------------- | --------------- |
-| Auth inválida        | 401 / 403       |
-| Parámetros inválidos | 400             |
+| Auth invÃ¡lida        | 401 / 403       |
+| ParÃ¡metros invÃ¡lidos | 400             |
 | Datos no disponibles | 404             |
 | Fallo interno        | 500 (capturado) |
 
@@ -182,14 +182,14 @@ Mostrar la **evolución temporal de discrepancias**.
 ### Riesgos
 
 * Uso del dashboard como API operativa
-* Exposición excesiva de datos
+* ExposiciÃ³n excesiva de datos
 
 ### Abusos
 
 * Scraping agresivo
 * Inferencia indirecta de datos sensibles
 
-### Fallos Sistémicos
+### Fallos SistÃ©micos
 
 * Read models desfasados
 * Agregaciones inconsistentes
@@ -197,7 +197,7 @@ Mostrar la **evolución temporal de discrepancias**.
 **Mitigaciones**
 
 * Rate limiting
-* TTL explícito en agregaciones
+* TTL explÃ­cito en agregaciones
 * Versionado de vistas
 
 ---
@@ -206,30 +206,30 @@ Mostrar la **evolución temporal de discrepancias**.
 
 ### Unitarias
 
-* Validación de contratos OpenAPI
-* Autorización read-only
+* ValidaciÃ³n de contratos OpenAPI
+* AutorizaciÃ³n read-only
 
 ### Propiedades
 
 * Determinismo de agregaciones
-* Inmutabilidad de vistas históricas
+* Inmutabilidad de vistas histÃ³ricas
 
-### Sistémicas
+### SistÃ©micas
 
 * Consistencia con RFC-13
-* Coherencia riesgo ↔ discrepancias
+* Coherencia riesgo â†” discrepancias
 
 ### Forenses
 
-* Trazabilidad desde vista → evidencia
+* Trazabilidad desde vista â†’ evidencia
 * Reproducibilidad por replay
 
 ---
 
-## Criterios de Aceptación
+## Criterios de AceptaciÃ³n
 
 * API solo lectura certificada
-* Ningún acceso a datos crudos
+* NingÃºn acceso a datos crudos
 * Agregaciones estables y deterministas
 * Integrable sin backend custom
 * Coherente con riesgo institucional
@@ -238,8 +238,8 @@ Mostrar la **evolución temporal de discrepancias**.
 
 ## Assumptions
 
-* Persistencia híbrida operativa (RFC-17)
+* Persistencia hÃ­brida operativa (RFC-17)
 * Runtime estable (RFC-14)
-* Señales de riesgo activas (RFC-13)
+* SeÃ±ales de riesgo activas (RFC-13)
 
 ---

@@ -1,61 +1,61 @@
-# RFC-06 — DISCREPANCY_TAXONOMY
-**Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
+﻿# RFC-06 â€” DISCREPANCY_TAXONOMY
+**Sistema:** Tenon â€” Sistema de Verdad Financiera Operativa y ConciliaciÃ³n Multisistema  
 **Estado:** DRAFT  
-**Relación:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
+**RelaciÃ³n:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
 RFC-02_INGEST_APPEND_ONLY, RFC-03_NORMALIZATION_RULES, RFC-04_CORRELATION_ENGINE,
 RFC-05_MONEY_STATE_MACHINE
 
 ---
 
-## 1) Propósito
+## PropÃ³sito
 
-Definir una **taxonomía formal y cerrada de discrepancias** para que Tenon convierta
-evidencia operativa en **diagnósticos accionables**, sin ruido ni ambigüedad semántica.
+Definir una **taxonomÃ­a formal y cerrada de discrepancias** para que Tenon convierta
+evidencia operativa en **diagnÃ³sticos accionables**, sin ruido ni ambigÃ¼edad semÃ¡ntica.
 
-La taxonomía permite:
+La taxonomÃ­a permite:
 - clasificar discrepancias de forma consistente,
-- distinguir retrasos normales de anomalías reales,
-- soportar priorización posterior (RFC-07),
-- explicar por qué algo es una discrepancia y no solo “no match”.
+- distinguir retrasos normales de anomalÃ­as reales,
+- soportar priorizaciÃ³n posterior (RFC-07),
+- explicar por quÃ© algo es una discrepancia y no solo â€œno matchâ€.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
-- Priorizar impacto económico (RFC-07).
-- Inferir culpabilidad, fraude o intención.
-- Ejecutar correcciones automáticas.
+- Priorizar impacto econÃ³mico (RFC-07).
+- Inferir culpabilidad, fraude o intenciÃ³n.
+- Ejecutar correcciones automÃ¡ticas.
 - Resolver discrepancias (Tenon diagnostica).
-- Crear categorías ad-hoc por cliente o integración.
+- Crear categorÃ­as ad-hoc por cliente o integraciÃ³n.
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
-### 3.1 Taxonomía cerrada
+### 3.1 TaxonomÃ­a cerrada
 - El conjunto de tipos de discrepancia es **finito y versionado**.
-- Prohibido crear “labels” dinámicos o categorías libres.
+- Prohibido crear â€œlabelsâ€ dinÃ¡micos o categorÃ­as libres.
 
-### 3.2 Diagnóstico basado en evidencia
+### 3.2 DiagnÃ³stico basado en evidencia
 - Ninguna discrepancia existe sin:
-  - evidencia explícita,
+  - evidencia explÃ­cita,
   - referencia a estados y eventos,
-  - regla diagnóstica versionada.
+  - regla diagnÃ³stica versionada.
 
-### 3.3 Separación estado ↔ discrepancia
-- Un `MoneyState` describe situación.
-- Una `Discrepancy` describe **desviación respecto a lo esperado**.
+### 3.3 SeparaciÃ³n estado â†” discrepancia
+- Un `MoneyState` describe situaciÃ³n.
+- Una `Discrepancy` describe **desviaciÃ³n respecto a lo esperado**.
 - No se mezclan conceptos.
 
 ### 3.4 Conservadurismo
-- Ante evidencia insuficiente ⇒ `INSUFFICIENT_EVIDENCE`.
-- Prohibido “forzar” clasificación.
+- Ante evidencia insuficiente â‡’ `INSUFFICIENT_EVIDENCE`.
+- Prohibido â€œforzarâ€ clasificaciÃ³n.
 
 ---
 
-## 4) Taxonomía de discrepancias (cerrada)
+## TaxonomÃ­a de discrepancias (cerrada)
 
-### 4.1 Categorías principales
+### 4.1 CategorÃ­as principales
 
 - `NO_DISCREPANCY`
 - `TIMING_DELAY`
@@ -70,34 +70,34 @@ La taxonomía permite:
 - `INSUFFICIENT_EVIDENCE`
 
 **Regla:**  
-Toda discrepancia debe pertenecer **exactamente a una** categoría primaria.
+Toda discrepancia debe pertenecer **exactamente a una** categorÃ­a primaria.
 
 ---
 
 ### 4.2 Definiciones formales (ejemplos)
 
 - **TIMING_DELAY**
-  - Evidencia esperada no llegó aún dentro de SLA configurable.
+  - Evidencia esperada no llegÃ³ aÃºn dentro de SLA configurable.
   - No implica error; puede resolverse con el tiempo.
 
 - **MISSING_EVENT**
-  - Se esperaba un evento (según máquina de estados) y no existe evidencia.
+  - Se esperaba un evento (segÃºn mÃ¡quina de estados) y no existe evidencia.
 
 - **DUPLICATE_EVENT**
-  - Eventos múltiples con misma identidad lógica (RFC-01A) y decisión REJECT_DUPLICATE.
+  - Eventos mÃºltiples con misma identidad lÃ³gica (RFC-01A) y decisiÃ³n REJECT_DUPLICATE.
 
 - **AMOUNT_MISMATCH**
   - Montos incompatibles entre eventos correlacionados.
 
 - **ORPHAN_EVENT**
-  - Evento sin correlación plausible dentro del flujo esperado.
+  - Evento sin correlaciÃ³n plausible dentro del flujo esperado.
 
 - **INSUFFICIENT_EVIDENCE**
   - No hay base suficiente para clasificar sin inventar.
 
 ---
 
-## 5) Contratos (conceptuales)
+## Contratos (conceptuales)
 
 ### 5.1 Discrepancy
 
@@ -113,69 +113,69 @@ Toda discrepancia debe pertenecer **exactamente a una** categoría primaria.
 - `explanation`
 - `detected_at`
 
-> `severity_hint` es indicativo; la priorización económica se define en RFC-07.
+> `severity_hint` es indicativo; la priorizaciÃ³n econÃ³mica se define en RFC-07.
 
 ---
 
-## 6) Flujo de diagnóstico (alto nivel)
+## Flujo de diagnÃ³stico (alto nivel)
 
-1. Evaluación de `MoneyState`.
-2. Comparación contra expectativas formales.
-3. Aplicación de reglas diagnósticas.
-4. Emisión de `Discrepancy` append-only.
-5. Registro de explicación y evidencia.
+1. EvaluaciÃ³n de `MoneyState`.
+2. ComparaciÃ³n contra expectativas formales.
+3. AplicaciÃ³n de reglas diagnÃ³sticas.
+4. EmisiÃ³n de `Discrepancy` append-only.
+5. Registro de explicaciÃ³n y evidencia.
 
 ---
 
-## 7) Threat Model
+## Threat Model
 
 ### 7.1 Amenazas
 - **Ruido excesivo** (todo es discrepancia).
-- **Clasificación optimista** que oculta problemas reales.
-- **Cambios semánticos** que reetiquetan historia.
-- **Ambigüedad forzada** para “simplificar” reportes.
+- **ClasificaciÃ³n optimista** que oculta problemas reales.
+- **Cambios semÃ¡nticos** que reetiquetan historia.
+- **AmbigÃ¼edad forzada** para â€œsimplificarâ€ reportes.
 
 ### 7.2 Controles exigidos
 - Enum cerrado y versionado.
 - Evidencia obligatoria.
 - `INSUFFICIENT_EVIDENCE` como salida segura.
-- Prohibición de reclasificación retroactiva.
+- ProhibiciÃ³n de reclasificaciÃ³n retroactiva.
 
 ---
 
-## 8) Pruebas
+## Pruebas
 
 ### 8.1 Unitarias
-- Toda discrepancia tiene tipo válido.
+- Toda discrepancia tiene tipo vÃ¡lido.
 - Rechazo de tipos fuera del enum.
-- Explicación no vacía.
+- ExplicaciÃ³n no vacÃ­a.
 
 ### 8.2 Propiedades
-- Determinismo: replay ⇒ mismas discrepancias.
+- Determinismo: replay â‡’ mismas discrepancias.
 - Monotonicidad: discrepancias se agregan, no se borran.
-- Conservadurismo: duda ⇒ INSUFFICIENT_EVIDENCE.
+- Conservadurismo: duda â‡’ INSUFFICIENT_EVIDENCE.
 
-### 8.3 Sistémicas
+### 8.3 SistÃ©micas
 - Flujos incompletos.
 - Eventos contradictorios.
-- Evidencia tardía que cambia diagnóstico.
-- Replay histórico completo.
+- Evidencia tardÃ­a que cambia diagnÃ³stico.
+- Replay histÃ³rico completo.
 
 ---
 
-## 9) Criterios de Aceptación
+## Criterios de AceptaciÃ³n
 
 Este RFC se considera cumplido cuando:
-1. Existe una taxonomía cerrada y explícita.
-2. Cada discrepancia es diagnóstica, no interpretativa.
-3. Evidencia y explicación son obligatorias.
-4. Ambigüedad es tratada como categoría válida.
-5. La clasificación es reproducible y versionada.
+1. Existe una taxonomÃ­a cerrada y explÃ­cita.
+2. Cada discrepancia es diagnÃ³stica, no interpretativa.
+3. Evidencia y explicaciÃ³n son obligatorias.
+4. AmbigÃ¼edad es tratada como categorÃ­a vÃ¡lida.
+5. La clasificaciÃ³n es reproducible y versionada.
 
 ---
 
-## 10) Assumptions
+## Assumptions
 
-- No toda desviación es error.
+- No toda desviaciÃ³n es error.
 - El mayor riesgo es clasificar mal, no clasificar lento.
-- La taxonomía debe resistir auditoría y litigio.
+- La taxonomÃ­a debe resistir auditorÃ­a y litigio.

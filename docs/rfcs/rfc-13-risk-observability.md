@@ -1,78 +1,78 @@
-# RFC-13 — RISK_OBSERVABILITY
-**Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
+﻿# RFC-13 â€” RISK_OBSERVABILITY
+**Sistema:** Tenon â€” Sistema de Verdad Financiera Operativa y ConciliaciÃ³n Multisistema  
 **Estado:** DRAFT  
-**Relación:** Depende de RFC-00_MANIFEST y de todos los RFCs funcionales previos (01–12)
+**RelaciÃ³n:** Depende de RFC-00_MANIFEST y de todos los RFCs funcionales previos (01â€“12)
 
 ---
 
-## 1) Propósito
+## PropÃ³sito
 
 Definir la **observabilidad institucional basada en riesgo** para gobernar Tenon como
-infraestructura crítica viva, enfocada en **control y degradación de riesgo operativo**
-—no en performance, throughput ni métricas vanity.
+infraestructura crÃ­tica viva, enfocada en **control y degradaciÃ³n de riesgo operativo**
+â€”no en performance, throughput ni mÃ©tricas vanity.
 
 Esta capa permite:
-- detectar degradaciones sistémicas antes de incidentes,
-- priorizar intervención humana donde el riesgo lo exige,
-- demostrar control continuo ante auditoría y comités de riesgo.
+- detectar degradaciones sistÃ©micas antes de incidentes,
+- priorizar intervenciÃ³n humana donde el riesgo lo exige,
+- demostrar control continuo ante auditorÃ­a y comitÃ©s de riesgo.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
-- Métricas de performance (latencia, QPS, CPU).
-- Observabilidad orientada a debugging técnico.
-- Dashboards genéricos o “bonitos”.
+- MÃ©tricas de performance (latencia, QPS, CPU).
+- Observabilidad orientada a debugging tÃ©cnico.
+- Dashboards genÃ©ricos o â€œbonitosâ€.
 - Alerting reactivo sin contexto institucional.
 - Automatizar acciones correctivas.
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
 ### 3.1 Riesgo sobre rendimiento
-- Toda métrica debe mapear explícitamente a **riesgo operativo, financiero o legal**.
-- Métricas sin interpretación de riesgo están prohibidas.
+- Toda mÃ©trica debe mapear explÃ­citamente a **riesgo operativo, financiero o legal**.
+- MÃ©tricas sin interpretaciÃ³n de riesgo estÃ¡n prohibidas.
 
-### 3.2 Señales derivadas, no crudas
+### 3.2 SeÃ±ales derivadas, no crudas
 - La observabilidad se construye sobre:
   - estados del dinero,
   - discrepancias,
   - causalidades,
   - idempotencia,
-  - cambios de versión.
+  - cambios de versiÃ³n.
 - No se basa directamente en eventos crudos.
 
 ### 3.3 Explicabilidad
 - Toda alerta o indicador debe poder explicar:
-  - qué cambió,
-  - por qué es riesgoso,
-  - qué evidencia lo sustenta.
+  - quÃ© cambiÃ³,
+  - por quÃ© es riesgoso,
+  - quÃ© evidencia lo sustenta.
 
-### 3.4 No mutación
-- La observabilidad **no altera** estados, eventos ni diagnósticos.
-- Es estrictamente de lectura y agregación.
+### 3.4 No mutaciÃ³n
+- La observabilidad **no altera** estados, eventos ni diagnÃ³sticos.
+- Es estrictamente de lectura y agregaciÃ³n.
 
 ---
 
-## 4) Señales institucionales (cerradas)
+## SeÃ±ales institucionales (cerradas)
 
 ### 4.1 Riesgo de discrepancias
-- Concentración de discrepancias `HIGH` por:
+- ConcentraciÃ³n de discrepancias `HIGH` por:
   - fuente,
   - tipo,
   - flujo.
-- Tendencia temporal de discrepancias críticas.
-- Antigüedad promedio de discrepancias no resueltas.
+- Tendencia temporal de discrepancias crÃ­ticas.
+- AntigÃ¼edad promedio de discrepancias no resueltas.
 
-### 4.2 Riesgo de correlación
-- Degradación del `confidence_score` promedio.
+### 4.2 Riesgo de correlaciÃ³n
+- DegradaciÃ³n del `confidence_score` promedio.
 - Aumento de correlaciones ambiguas por flujo.
 - Crecimiento de `ORPHAN_EVENT`.
 
 ### 4.3 Riesgo de estados
-- Acumulación de estados `AMBIGUOUS`, `UNKNOWN`, `IN_TRANSIT` fuera de SLA.
-- Flujos “stale” (sin evolución pese a nueva evidencia).
+- AcumulaciÃ³n de estados `AMBIGUOUS`, `UNKNOWN`, `IN_TRANSIT` fuera de SLA.
+- Flujos â€œstaleâ€ (sin evoluciÃ³n pese a nueva evidencia).
 - Divergencia entre estados esperados y observados.
 
 ### 4.4 Riesgo de idempotencia
@@ -82,25 +82,25 @@ Esta capa permite:
 
 ### 4.5 Riesgo de cambio
 - Cambios recientes con impacto en:
-  - correlación,
+  - correlaciÃ³n,
   - estados,
   - discrepancias.
 - Versiones coexistentes con resultados divergentes.
 - Incremento de discrepancias post-change.
 
 ### 4.6 Riesgo humano-operativo
-- Sobreuso de intervención humana.
+- Sobreuso de intervenciÃ³n humana.
 - Reapertura recurrente de discrepancias.
 - Dependencia de overrides manuales.
 
 ---
 
-## 5) Contratos (conceptuales)
+## Contratos (conceptuales)
 
 ### 5.1 RiskSignal
 
 - `risk_signal_id`
-- `signal_type` (enum cerrado; ver sección 4)
+- `signal_type` (enum cerrado; ver secciÃ³n 4)
 - `scope` (GLOBAL | SOURCE | FLOW | COMPONENT)
 - `severity_level` (LOW | MEDIUM | HIGH | CRITICAL)
 - `supporting_metrics[]`
@@ -115,7 +115,7 @@ Esta capa permite:
 
 - `aggregate_id`
 - `time_window`
-- `risk_profile` (vector de señales)
+- `risk_profile` (vector de seÃ±ales)
 - `overall_risk_level`
 - `drivers[]`
 - `computed_at`
@@ -123,105 +123,105 @@ Esta capa permite:
 
 ---
 
-## 6) Umbrales institucionales
+## Umbrales institucionales
 
 - Los umbrales:
-  - son explícitos,
+  - son explÃ­citos,
   - versionados,
   - aprobados institucionalmente.
 - Ejemplos:
   - >X% de flujos en `AMBIGUOUS` por >Y horas.
-  - crecimiento anómalo (>Zσ) de discrepancias críticas.
-  - degradación sostenida de correlación >N ventanas.
+  - crecimiento anÃ³malo (>ZÏƒ) de discrepancias crÃ­ticas.
+  - degradaciÃ³n sostenida de correlaciÃ³n >N ventanas.
 
 Los umbrales **no se auto-ajustan** sin cambio controlado (RFC-12).
 
 ---
 
-## 7) Alertas (no reactivas)
+## Alertas (no reactivas)
 
 ### 7.1 Principios
-- Alertas indican **riesgo**, no “error”.
+- Alertas indican **riesgo**, no â€œerrorâ€.
 - Toda alerta incluye:
-  - señal,
+  - seÃ±al,
   - evidencia,
   - impacto potencial,
-  - recomendación operativa.
+  - recomendaciÃ³n operativa.
 
 ### 7.2 Tipos
-- **Early Warning** — degradación incipiente.
-- **Risk Escalation** — riesgo material.
-- **Institutional Breach** — violación de umbral crítico.
+- **Early Warning** â€” degradaciÃ³n incipiente.
+- **Risk Escalation** â€” riesgo material.
+- **Institutional Breach** â€” violaciÃ³n de umbral crÃ­tico.
 
 ---
 
-## 8) Dashboards (criterios)
+## Dashboards (criterios)
 
 ### 8.1 Ejecutivo
 - Riesgo agregado del sistema.
 - Top drivers de riesgo.
 - Tendencias y comparativas pre/post cambio.
-- No métricas técnicas.
+- No mÃ©tricas tÃ©cnicas.
 
 ### 8.2 Operativo
 - Vistas por fuente / flujo.
-- Backlog de discrepancias críticas.
-- Estados stale y ambigüedades.
-- Evidencia navegable (“película”).
+- Backlog de discrepancias crÃ­ticas.
+- Estados stale y ambigÃ¼edades.
+- Evidencia navegable (â€œpelÃ­culaâ€).
 
 ---
 
-## 9) Threat Model
+## Threat Model
 
 ### 9.1 Amenazas
 - **Ceguera institucional** (no ver riesgo emergente).
 - **Ruido excesivo** que banaliza alertas.
-- **Métricas vanity** que ocultan problemas reales.
+- **MÃ©tricas vanity** que ocultan problemas reales.
 - **Cambios sin monitoreo** de impacto.
 - **Dependencia humana no detectada**.
 
 ### 9.2 Controles exigidos
-- Señales cerradas y versionadas.
-- Evidencia obligatoria por señal.
-- Umbrales explícitos.
-- Separación observación/acción.
-- Auditoría de cambios en observabilidad.
+- SeÃ±ales cerradas y versionadas.
+- Evidencia obligatoria por seÃ±al.
+- Umbrales explÃ­citos.
+- SeparaciÃ³n observaciÃ³n/acciÃ³n.
+- AuditorÃ­a de cambios en observabilidad.
 
 ---
 
-## 10) Pruebas
+## Pruebas
 
 ### 10.1 Unitarias
-- Cálculo correcto de señales.
+- CÃ¡lculo correcto de seÃ±ales.
 - Severidad consistente con umbrales.
-- Explicación no vacía.
+- ExplicaciÃ³n no vacÃ­a.
 
 ### 10.2 Propiedades
-- Determinismo: mismo input ⇒ mismas señales.
+- Determinismo: mismo input â‡’ mismas seÃ±ales.
 - No side-effects: lectura pura.
-- Estabilidad temporal: replay reproduce señales históricas.
+- Estabilidad temporal: replay reproduce seÃ±ales histÃ³ricas.
 
-### 10.3 Sistémicas
-- Simulación de degradación progresiva.
-- Incidente histórico reproducido.
-- Cambios de versión con comparación de riesgo.
-- Auditoría de alertas pasadas.
+### 10.3 SistÃ©micas
+- SimulaciÃ³n de degradaciÃ³n progresiva.
+- Incidente histÃ³rico reproducido.
+- Cambios de versiÃ³n con comparaciÃ³n de riesgo.
+- AuditorÃ­a de alertas pasadas.
 
 ---
 
-## 11) Criterios de Aceptación
+## Criterios de AceptaciÃ³n
 
 Este RFC se considera cumplido cuando:
 1. La observabilidad refleja riesgo institucional, no performance.
-2. Las señales son explicables, versionadas y reproducibles.
+2. Las seÃ±ales son explicables, versionadas y reproducibles.
 3. Existen vistas ejecutivas y operativas basadas en riesgo.
-4. Los umbrales son explícitos y gobernados.
+4. Los umbrales son explÃ­citos y gobernados.
 5. El sistema puede demostrar control continuo del riesgo.
 
 ---
 
-## 12) Assumptions
+## Assumptions
 
-- Gobernar riesgo es más valioso que optimizar métricas técnicas.
+- Gobernar riesgo es mÃ¡s valioso que optimizar mÃ©tricas tÃ©cnicas.
 - El sistema debe advertir antes de fallar.
 - La observabilidad es parte de la defensa institucional.

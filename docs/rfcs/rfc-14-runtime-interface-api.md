@@ -1,10 +1,10 @@
-# RFC-14 — Runtime Interface & API Gateway (DRAFT)
+# RFC-14 â€” Runtime Interface & API Gateway (DRAFT)
 
-## Propósito
+## PropÃ³sito
 
-Definir la **interfaz de tiempo de ejecución** que expone el núcleo TENON como un **servicio web institucional**, transformando la librería `core/` en una **API consumible, segura y determinista**, sin introducir estado, lógica de negocio adicional ni acoplamientos no contractuales.
+Definir la **interfaz de tiempo de ejecuciÃ³n** que expone el nÃºcleo TENON como un **servicio web institucional**, transformando la librerÃ­a `core/` en una **API consumible, segura y determinista**, sin introducir estado, lÃ³gica de negocio adicional ni acoplamientos no contractuales.
 
-Este RFC establece **cómo se ejecuta TENON en producción**, **cómo se accede**, **cómo falla** y **cómo se gobierna el flujo de tráfico**.
+Este RFC establece **cÃ³mo se ejecuta TENON en producciÃ³n**, **cÃ³mo se accede**, **cÃ³mo falla** y **cÃ³mo se gobierna el flujo de trÃ¡fico**.
 
 ---
 
@@ -12,9 +12,9 @@ Este RFC establece **cómo se ejecuta TENON en producción**, **cómo se accede*
 
 Este RFC **NO**:
 
-* Define lógica de negocio financiera.
-* Introduce reglas nuevas de ingestión, normalización, correlación o riesgo.
-* Implementa dashboards, UI o visualización.
+* Define lÃ³gica de negocio financiera.
+* Introduce reglas nuevas de ingestiÃ³n, normalizaciÃ³n, correlaciÃ³n o riesgo.
+* Implementa dashboards, UI o visualizaciÃ³n.
 * Persiste estado en memoria del servidor.
 * Define despliegue (ver RFC-16).
 * Define almacenamiento (ver RFC-17).
@@ -25,7 +25,7 @@ Este RFC **NO**:
 
 1. **Contract-First**
 
-   * La API se define **únicamente** mediante una especificación **OpenAPI 3.1**.
+   * La API se define **Ãºnicamente** mediante una especificaciÃ³n **OpenAPI 3.1**.
    * El runtime **no acepta** requests fuera del contrato versionado.
 
 2. **Statelessness**
@@ -35,21 +35,21 @@ Este RFC **NO**:
 
 3. **Aislamiento de Fallos**
 
-   * Cualquier excepción no controlada del Core:
+   * Cualquier excepciÃ³n no controlada del Core:
 
      * se captura,
-     * se registra como evento técnico,
+     * se registra como evento tÃ©cnico,
      * retorna `HTTP 500`,
      * **no detiene** el proceso del servidor.
 
 4. **Backpressure Institucional**
 
-   * El runtime debe **rechazar tráfico** cuando el sistema interno esté degradado.
-   * Nunca se acepta tráfico que no pueda procesarse con garantías.
+   * El runtime debe **rechazar trÃ¡fico** cuando el sistema interno estÃ© degradado.
+   * Nunca se acepta trÃ¡fico que no pueda procesarse con garantÃ­as.
 
 5. **Observabilidad de Riesgo**
 
-   * El runtime **no expone métricas técnicas** (CPU, RAM).
+   * El runtime **no expone mÃ©tricas tÃ©cnicas** (CPU, RAM).
    * Solo expone **estado institucional** (RFC-13).
 
 ---
@@ -64,24 +64,24 @@ Este RFC **NO**:
 
 ---
 
-## Diseño Técnico
+## DiseÃ±o TÃ©cnico
 
 ### Estilo de API
 
 * **REST**
 * **OpenAPI 3.1**
-* Versionado explícito en path: `/v1/*`
-* JSON estricto (no esquemas implícitos)
+* Versionado explÃ­cito en path: `/v1/*`
+* JSON estricto (no esquemas implÃ­citos)
 
 ### Framework de Runtime
 
-* **FastAPI (Python)** o equivalente asíncrono de alto rendimiento.
-* Ejecución **async-first**.
-* El runtime actúa como **Boundary Layer**, no como Core.
+* **FastAPI (Python)** o equivalente asÃ­ncrono de alto rendimiento.
+* EjecuciÃ³n **async-first**.
+* El runtime actÃºa como **Boundary Layer**, no como Core.
 
 ---
 
-### Autenticación & Seguridad
+### AutenticaciÃ³n & Seguridad
 
 #### Modos soportados
 
@@ -91,14 +91,14 @@ Este RFC **NO**:
    * Asociado a:
 
      * tenant_id
-     * límites de rate
+     * lÃ­mites de rate
      * scopes permitidos
-   * Rotación obligatoria.
+   * RotaciÃ³n obligatoria.
 
 2. **mTLS (Mutual TLS)**
 
    * **Obligatorio** para integraciones bancarias directas.
-   * Validación de certificado cliente en handshake.
+   * ValidaciÃ³n de certificado cliente en handshake.
    * El certificado identifica al tenant.
 
 > El runtime **no mezcla** mTLS y API Key en un mismo request.
@@ -110,28 +110,28 @@ Este RFC **NO**:
 * **Rate limiting por tenant**
 * **Cola interna con umbral**
 
-  * Si ocupación > 80% → rechazar con `HTTP 429`
-* **Backpressure explícito**
+  * Si ocupaciÃ³n > 80% â†’ rechazar con `HTTP 429`
+* **Backpressure explÃ­cito**
 
-  * Nunca se aceptan requests “a ciegas”
+  * Nunca se aceptan requests â€œa ciegasâ€
 
 ---
 
-## Endpoints Canónicos
+## Endpoints CanÃ³nicos
 
 ### `POST /v1/ingest`
 
-**Propósito**
+**PropÃ³sito**
 Entrada oficial de eventos crudos al sistema.
 
 **Comportamiento**
 
-* Validación **síncrona** de:
+* ValidaciÃ³n **sÃ­ncrona** de:
 
-  * JSON válido
+  * JSON vÃ¡lido
   * esquema contractual
-* Procesamiento **asíncrono**.
-* Nunca bloquea esperando correlación o estados.
+* Procesamiento **asÃ­ncrono**.
+* Nunca bloquea esperando correlaciÃ³n o estados.
 
 **Respuesta**
 
@@ -147,33 +147,33 @@ Entrada oficial de eventos crudos al sistema.
 
 **Errores**
 
-* `400` → esquema inválido
-* `401/403` → auth
-* `429` → backpressure
-* `500` → fallo interno capturado
+* `400` â†’ esquema invÃ¡lido
+* `401/403` â†’ auth
+* `429` â†’ backpressure
+* `500` â†’ fallo interno capturado
 
 ---
 
 ### `GET /v1/discrepancies/{id}`
 
-**Propósito**
-Consulta diagnóstica de una discrepancia específica.
+**PropÃ³sito**
+Consulta diagnÃ³stica de una discrepancia especÃ­fica.
 
-**Garantías**
+**GarantÃ­as**
 
 * Solo lectura.
-* Retorna explicación, evidencia y causalidad (RFC-06/07).
+* Retorna explicaciÃ³n, evidencia y causalidad (RFC-06/07).
 
 ---
 
 ### `GET /v1/risk/status`
 
-**Propósito**
-Exponer el **semáforo institucional de riesgo**.
+**PropÃ³sito**
+Exponer el **semÃ¡foro institucional de riesgo**.
 
 **Fuente**
 
-* Señales derivadas exclusivamente de RFC-13.
+* SeÃ±ales derivadas exclusivamente de RFC-13.
 
 **Respuesta**
 
@@ -186,18 +186,18 @@ Exponer el **semáforo institucional de riesgo**.
 
 ## Manejo de Errores
 
-| Tipo              | Acción            |
+| Tipo              | AcciÃ³n            |
 | ----------------- | ----------------- |
 | Error de contrato | `400`             |
 | Auth              | `401 / 403`       |
-| Saturación        | `429`             |
-| Pánico Core       | `500` (capturado) |
+| SaturaciÃ³n        | `429`             |
+| PÃ¡nico Core       | `500` (capturado) |
 
 * **Nunca** se exponen stacktraces.
 * Todo error genera:
 
-  * evento técnico
-  * correlación con request_id
+  * evento tÃ©cnico
+  * correlaciÃ³n con request_id
 
 ---
 
@@ -205,8 +205,8 @@ Exponer el **semáforo institucional de riesgo**.
 
 ### Riesgos
 
-* Inyección de payloads inválidos
-* Flood de tráfico malicioso
+* InyecciÃ³n de payloads invÃ¡lidos
+* Flood de trÃ¡fico malicioso
 * Reintentos no idempotentes
 
 ### Abusos
@@ -214,16 +214,16 @@ Exponer el **semáforo institucional de riesgo**.
 * Replays masivos
 * API key compartida
 
-### Fallos Sistémicos
+### Fallos SistÃ©micos
 
-* Saturación de colas
-* Caída parcial de persistencia
+* SaturaciÃ³n de colas
+* CaÃ­da parcial de persistencia
 
 **Mitigaciones**
 
 * Idempotency Guardian (RFC-10)
 * Backpressure
-* Circuit-breaker lógico (no técnico)
+* Circuit-breaker lÃ³gico (no tÃ©cnico)
 
 ---
 
@@ -231,7 +231,7 @@ Exponer el **semáforo institucional de riesgo**.
 
 ### Unitarias
 
-* Validación de contratos OpenAPI
+* ValidaciÃ³n de contratos OpenAPI
 * Auth & rate limiting
 
 ### Propiedades
@@ -239,23 +239,23 @@ Exponer el **semáforo institucional de riesgo**.
 * Statelessness (no memoria cruzada)
 * Determinismo de respuestas
 
-### Sistémicas
+### SistÃ©micas
 
-* Ingest → persistencia → consulta
+* Ingest â†’ persistencia â†’ consulta
 * Backpressure bajo carga
 
 ### Forenses
 
-* Registro de fallos sin pérdida de evidencia
+* Registro de fallos sin pÃ©rdida de evidencia
 
 ---
 
-## Criterios de Aceptación
+## Criterios de AceptaciÃ³n
 
 * OpenAPI 3.1 publicado y versionado
-* Ningún endpoint fuera del contrato
-* Runtime sobrevive a pánicos del core
-* Backpressure probado bajo estrés
+* NingÃºn endpoint fuera del contrato
+* Runtime sobrevive a pÃ¡nicos del core
+* Backpressure probado bajo estrÃ©s
 * Sin estado en memoria
 
 ---

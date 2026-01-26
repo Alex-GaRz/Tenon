@@ -12,13 +12,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Ensure RFC index exists
-        # El estándar exige README.md en la nueva ruta
         run: test -f docs/rfcs/README.md
 
       - name: Enforce RFC filename convention
         run: |
           set -e
-          # Permite RFC-00_MANIFEST.md (Mayúsculas) y rfc-nn-nombre.md (Minúsculas)
+          # Detecta archivos que NO sigan el patrón rfc-nn-nombre.md 
+          # Exceptuando el Manifiesto y el README
           bad=$(find docs/rfcs -maxdepth 1 -type f -name "*.md" \
             ! -name "README.md" \
             ! -name "RFC-00_MANIFEST.md" \
@@ -32,12 +32,13 @@ jobs:
       - name: Require RFC template sections (minimum)
         run: |
           set -e
+          # Busca en docs/rfcs/ y acepta archivos rfc-*.md o el Manifiesto
           for f in $(find docs/rfcs -maxdepth 1 -type f -name "*.md" ! -name "README.md"); do
             echo "Validating $f..."
-            grep -q "^## Propósito" "$f"
-            grep -q "^## No-Goals" "$f"
-            grep -q "^## Invariantes" "$f"
-            grep -q "^## Threat Model" "$f"
-            grep -q "^## Pruebas" "$f"
-            grep -q "^## Criterios de Aceptación" "$f"
+            grep -q "^## Propósito" "$f" || (echo "Falta '## Propósito' en $f"; exit 1)
+            grep -q "^## No-Goals" "$f" || (echo "Falta '## No-Goals' en $f"; exit 1)
+            grep -q "^## Invariantes" "$f" || (echo "Falta '## Invariantes' en $f"; exit 1)
+            grep -q "^## Threat Model" "$f" || (echo "Falta '## Threat Model' en $f"; exit 1)
+            grep -q "^## Pruebas" "$f" || (echo "Falta '## Pruebas' en $f"; exit 1)
+            grep -q "^## Criterios de Aceptación" "$f" || (echo "Falta '## Criterios de Aceptación' en $f"; exit 1)
           done

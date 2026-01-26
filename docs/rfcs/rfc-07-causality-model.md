@@ -1,57 +1,57 @@
-# RFC-07 — CAUSALITY_MODEL
-**Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
+﻿# RFC-07 â€” CAUSALITY_MODEL
+**Sistema:** Tenon â€” Sistema de Verdad Financiera Operativa y ConciliaciÃ³n Multisistema  
 **Estado:** DRAFT  
-**Relación:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
+**RelaciÃ³n:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
 RFC-02_INGEST_APPEND_ONLY, RFC-03_NORMALIZATION_RULES, RFC-04_CORRELATION_ENGINE,
 RFC-05_MONEY_STATE_MACHINE, RFC-06_DISCREPANCY_TAXONOMY
 
 ---
 
-## 1) Propósito
+## PropÃ³sito
 
 Definir el **modelo de causalidad explicable** de Tenon para atribuir
-**por qué** ocurre una discrepancia, **dónde** se origina y **qué patrón**
-la explica, sin inferencias implícitas ni heurísticas opacas.
+**por quÃ©** ocurre una discrepancia, **dÃ³nde** se origina y **quÃ© patrÃ³n**
+la explica, sin inferencias implÃ­citas ni heurÃ­sticas opacas.
 
 El modelo convierte discrepancias en **explicaciones defendibles**.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
-- Priorizar impacto económico (RFC-08 posterior).
-- Inferir intención, fraude o culpa humana.
-- Ejecutar correcciones automáticas.
-- “Aprender” causalidad sin evidencia registrada.
-- Colapsar múltiples causas en una sola por conveniencia.
+- Priorizar impacto econÃ³mico (RFC-08 posterior).
+- Inferir intenciÃ³n, fraude o culpa humana.
+- Ejecutar correcciones automÃ¡ticas.
+- â€œAprenderâ€ causalidad sin evidencia registrada.
+- Colapsar mÃºltiples causas en una sola por conveniencia.
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
 ### 3.1 Causalidad basada en evidencia
 - Toda causa debe estar respaldada por:
   - eventos,
   - estados,
-  - reglas explícitas,
+  - reglas explÃ­citas,
   - versiones.
 
 ### 3.2 No unicidad forzada
-- Una discrepancia puede tener **múltiples causas plausibles**.
+- Una discrepancia puede tener **mÃºltiples causas plausibles**.
 - Cada causa se registra por separado, con su evidencia.
 
-### 3.3 Separación causa ↔ severidad
+### 3.3 SeparaciÃ³n causa â†” severidad
 - La causalidad explica el **origen**.
 - La severidad/prioridad se define fuera (etapas posteriores).
 
 ### 3.4 Reproducibilidad
-- Misma evidencia + mismas reglas ⇒ mismas causas atribuidas.
+- Misma evidencia + mismas reglas â‡’ mismas causas atribuidas.
 
 ---
 
-## 4) Taxonomía de causas (cerrada)
+## TaxonomÃ­a de causas (cerrada)
 
-### 4.1 Categorías principales
+### 4.1 CategorÃ­as principales
 
 - `SOURCE_DELAY`
 - `SOURCE_OMISSION`
@@ -65,18 +65,18 @@ El modelo convierte discrepancias en **explicaciones defendibles**.
 - `UNKNOWN_CAUSE`
 
 **Regla:**  
-Toda causa debe pertenecer a **exactamente una** categoría primaria.
+Toda causa debe pertenecer a **exactamente una** categorÃ­a primaria.
 
 ---
 
-## 5) Contratos (conceptuales)
+## Contratos (conceptuales)
 
 ### 5.1 CausalityAttribution
 
 - `causality_id`
 - `discrepancy_id`
 - `cause_type` (enum cerrado)
-- `confidence_level` (0.0–1.0)
+- `confidence_level` (0.0â€“1.0)
 - `supporting_events[]`
 - `supporting_states[]`
 - `supporting_rules[]`
@@ -84,70 +84,70 @@ Toda causa debe pertenecer a **exactamente una** categoría primaria.
 - `attributed_at`
 - `model_version`
 
-> Una discrepancia puede tener múltiples `CausalityAttribution`.
+> Una discrepancia puede tener mÃºltiples `CausalityAttribution`.
 
 ---
 
-## 6) Flujo de atribución causal (alto nivel)
+## Flujo de atribuciÃ³n causal (alto nivel)
 
-1. Selección de discrepancia.
-2. Evaluación de reglas causales aplicables.
-3. Recolección de evidencia.
-4. Emisión de una o más atribuciones causales.
+1. SelecciÃ³n de discrepancia.
+2. EvaluaciÃ³n de reglas causales aplicables.
+3. RecolecciÃ³n de evidencia.
+4. EmisiÃ³n de una o mÃ¡s atribuciones causales.
 5. Registro append-only.
 
 Nunca se elimina una causa previamente atribuida.
 
 ---
 
-## 7) Threat Model
+## Threat Model
 
 ### 7.1 Amenazas
-- **Causa única simplista** que oculta complejidad real.
-- **Causalidad implícita** (“porque siempre pasa”).
-- **Cambios retroactivos** que reescriben explicación histórica.
-- **Confusión causa ↔ síntoma**.
+- **Causa Ãºnica simplista** que oculta complejidad real.
+- **Causalidad implÃ­cita** (â€œporque siempre pasaâ€).
+- **Cambios retroactivos** que reescriben explicaciÃ³n histÃ³rica.
+- **ConfusiÃ³n causa â†” sÃ­ntoma**.
 
 ### 7.2 Controles exigidos
 - Enum cerrado y versionado.
-- Evidencia explícita por causa.
-- Posibilidad de múltiples causas.
+- Evidencia explÃ­cita por causa.
+- Posibilidad de mÃºltiples causas.
 - Versionado del modelo causal.
 
 ---
 
-## 8) Pruebas
+## Pruebas
 
 ### 8.1 Unitarias
-- Toda causa tiene tipo válido.
-- Explicación obligatoria.
+- Toda causa tiene tipo vÃ¡lido.
+- ExplicaciÃ³n obligatoria.
 - Rechazo de causas fuera del enum.
 
 ### 8.2 Propiedades
-- Determinismo: replay ⇒ mismas causas.
-- No colapso: múltiples causas se preservan.
-- Conservadurismo: evidencia débil ⇒ `UNKNOWN_CAUSE`.
+- Determinismo: replay â‡’ mismas causas.
+- No colapso: mÃºltiples causas se preservan.
+- Conservadurismo: evidencia dÃ©bil â‡’ `UNKNOWN_CAUSE`.
 
-### 8.3 Sistémicas
-- Discrepancias complejas con múltiples fuentes.
+### 8.3 SistÃ©micas
+- Discrepancias complejas con mÃºltiples fuentes.
 - Evidencia parcial o contradictoria.
-- Replay histórico completo.
+- Replay histÃ³rico completo.
 
 ---
 
-## 9) Criterios de Aceptación
+## Criterios de AceptaciÃ³n
 
 Este RFC se considera cumplido cuando:
-1. La causalidad es explícita, versionada y reproducible.
-2. Múltiples causas pueden coexistir sin colapsarse.
-3. Toda causa tiene evidencia y explicación estructurada.
-4. La atribución evita inferencias implícitas.
-5. El modelo resiste auditoría y revisión legal.
+1. La causalidad es explÃ­cita, versionada y reproducible.
+2. MÃºltiples causas pueden coexistir sin colapsarse.
+3. Toda causa tiene evidencia y explicaciÃ³n estructurada.
+4. La atribuciÃ³n evita inferencias implÃ­citas.
+5. El modelo resiste auditorÃ­a y revisiÃ³n legal.
 
 ---
 
-## 10) Assumptions
+## Assumptions
 
-- Las causas reales no siempre son únicas ni simples.
+- Las causas reales no siempre son Ãºnicas ni simples.
 - Es preferible explicar incertidumbre que inventar certeza.
-- La causalidad es diagnóstica, no punitiva.
+- La causalidad es diagnÃ³stica, no punitiva.

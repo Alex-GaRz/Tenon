@@ -1,57 +1,57 @@
-# RFC-10 — IDEMPOTENCY_GUARDIAN
-**Sistema:** Tenon — Sistema de Verdad Financiera Operativa y Conciliación Multisistema  
+﻿# RFC-10 â€” IDEMPOTENCY_GUARDIAN
+**Sistema:** Tenon â€” Sistema de Verdad Financiera Operativa y ConciliaciÃ³n Multisistema  
 **Estado:** DRAFT  
-**Relación:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
+**RelaciÃ³n:** Depende de RFC-00_MANIFEST, RFC-01_CANONICAL_EVENT, RFC-01A_CANONICAL_IDS,
 RFC-02_INGEST_APPEND_ONLY, RFC-03_NORMALIZATION_RULES, RFC-08_EVENT_SOURCING_EVIDENCE,
 RFC-09_IMMUTABLE_LEDGER_WORM
 
 ---
 
-## 1) Propósito
+## PropÃ³sito
 
 Definir el **Guardian de Idempotencia** como control institucional para garantizar que:
-- reintentos, fallos distribuidos y duplicados no produzcan “realidades paralelas”,
-- la unicidad sea demostrable como evidencia (no solo “best effort”),
-- Tenon pueda probar, ante auditoría/litigio, que una misma intención/observación
-  no generó múltiples efectos lógicos dentro del sistema.
+- reintentos, fallos distribuidos y duplicados no produzcan â€œrealidades paralelasâ€,
+- la unicidad sea demostrable como evidencia (no solo â€œbest effortâ€),
+- Tenon pueda probar, ante auditorÃ­a/litigio, que una misma intenciÃ³n/observaciÃ³n
+  no generÃ³ mÃºltiples efectos lÃ³gicos dentro del sistema.
 
 El Guardian convierte idempotencia en **propiedad probatoria**.
 
 ---
 
-## 2) No-Goals
+## No-Goals
 
 - Ejecutar pagos o efectos externos.
-- Resolver correlación probabilística (RFC-04).
+- Resolver correlaciÃ³n probabilÃ­stica (RFC-04).
 - Corregir datos crudos o canon.
-- Definir tecnología concreta de almacenamiento.
+- Definir tecnologÃ­a concreta de almacenamiento.
 - Garantizar unicidad en sistemas externos (solo en Tenon).
 
 ---
 
-## 3) Invariantes
+## Invariantes
 
-### 3.1 Idempotencia obligatoria para todo “write lógico”
-Cualquier operación que:
+### 3.1 Idempotencia obligatoria para todo â€œwrite lÃ³gicoâ€
+Cualquier operaciÃ³n que:
 - registre ingesta,
 - materialice CanonicalEvent,
 - emita EvidenceEvent,
-- emita vínculos de correlación,
+- emita vÃ­nculos de correlaciÃ³n,
 - produzca estados o discrepancias,
 
 debe estar cubierta por un mecanismo idempotente verificable.
 
 ### 3.2 Unicidad demostrable
-Para cada acción idempotente existe:
+Para cada acciÃ³n idempotente existe:
 - una **clave determinista**,
-- un **registro append-only** de decisión,
-- evidencia de que “ya ocurrió” o “no ocurrió”.
+- un **registro append-only** de decisiÃ³n,
+- evidencia de que â€œya ocurriÃ³â€ o â€œno ocurriÃ³â€.
 
-### 3.3 Decisiones explícitas (no silenciosas)
-El Guardian produce una decisión formal:
+### 3.3 Decisiones explÃ­citas (no silenciosas)
+El Guardian produce una decisiÃ³n formal:
 - `ACCEPT_FIRST` (primera vez)
 - `REJECT_DUPLICATE` (duplicado exacto)
-- `FLAG_AMBIGUOUS` (colisión/ambigüedad; no se ejecuta efecto)
+- `FLAG_AMBIGUOUS` (colisiÃ³n/ambigÃ¼edad; no se ejecuta efecto)
 
 ### 3.4 Append-only + WORM
 Los registros de idempotencia:
@@ -59,19 +59,19 @@ Los registros de idempotencia:
 - se escriben en el ledger WORM (RFC-09) como evidencia.
 
 ### 3.5 Determinismo
-Mismo input + misma versión de reglas ⇒ misma clave y misma decisión.
+Mismo input + misma versiÃ³n de reglas â‡’ misma clave y misma decisiÃ³n.
 
 ---
 
-## 4) Contratos
+## Contratos
 
 ### 4.1 IdempotencyKey (concepto)
-Una `IdempotencyKey` es una representación determinista (normalizada) de:
-- `scope` (qué tipo de operación protege)
-- `principal/source` (qué actor o fuente originó la operación)
-- `subject` (sobre qué entidad opera: raw, event, flow, etc.)
+Una `IdempotencyKey` es una representaciÃ³n determinista (normalizada) de:
+- `scope` (quÃ© tipo de operaciÃ³n protege)
+- `principal/source` (quÃ© actor o fuente originÃ³ la operaciÃ³n)
+- `subject` (sobre quÃ© entidad opera: raw, event, flow, etc.)
 - `payload_hash` (hash de contenido relevante)
-- `version` (versión del esquema/regla de clave)
+- `version` (versiÃ³n del esquema/regla de clave)
 
 **Regla:** la clave debe ser estable y verificable.
 
@@ -92,84 +92,84 @@ Registro append-only que contiene:
 
 ---
 
-### 4.3 Scopes mínimos obligatorios
-El Guardian debe cubrir como mínimo:
+### 4.3 Scopes mÃ­nimos obligatorios
+El Guardian debe cubrir como mÃ­nimo:
 - `INGEST` (RFC-02)
 - `CANONICALIZE` (RFC-03)
 - `EVIDENCE_WRITE` (RFC-08)
 - (Opcional por etapa futura) `CORRELATE`, `STATE_EVAL`, `DISCREPANCY_EVAL`
 
-> Este RFC exige el marco general; la ampliación por scope se valida en los RFCs respectivos.
+> Este RFC exige el marco general; la ampliaciÃ³n por scope se valida en los RFCs respectivos.
 
 ---
 
-## 5) Modelo operativo (alto nivel)
+## Modelo operativo (alto nivel)
 
-1. Se calcula `idempotency_key` determinista para la operación.
+1. Se calcula `idempotency_key` determinista para la operaciÃ³n.
 2. Se consulta el registro de idempotencia (append-only):
-   - si no existe → `ACCEPT_FIRST`
-   - si existe match exacto → `REJECT_DUPLICATE`
-   - si existe colisión/ambigüedad → `FLAG_AMBIGUOUS`
+   - si no existe â†’ `ACCEPT_FIRST`
+   - si existe match exacto â†’ `REJECT_DUPLICATE`
+   - si existe colisiÃ³n/ambigÃ¼edad â†’ `FLAG_AMBIGUOUS`
 3. Se registra un `IdempotencyRecord` en el ledger WORM.
-4. Solo si `ACCEPT_FIRST` se permite continuar con el write lógico.
+4. Solo si `ACCEPT_FIRST` se permite continuar con el write lÃ³gico.
 
 ---
 
-## 6) Threat Model
+## Threat Model
 
 ### 6.1 Amenazas
-- **Retries masivos** provocan duplicados (doble registro, doble vínculo, doble discrepancia).
-- **Race conditions** producen aceptaciones múltiples.
-- **Colisiones de claves** por mala construcción de idempotency_key.
-- **Bypass** del Guardian (código que escribe sin pasar por él).
-- **Reescritura** de registros de idempotencia para “limpiar” duplicados.
+- **Retries masivos** provocan duplicados (doble registro, doble vÃ­nculo, doble discrepancia).
+- **Race conditions** producen aceptaciones mÃºltiples.
+- **Colisiones de claves** por mala construcciÃ³n de idempotency_key.
+- **Bypass** del Guardian (cÃ³digo que escribe sin pasar por Ã©l).
+- **Reescritura** de registros de idempotencia para â€œlimpiarâ€ duplicados.
 
 ### 6.2 Controles exigidos
-- Registro de decisión inmutable (WORM).
-- Separación de “decidir” y “ejecutar”.
-- Detección de bypass (tests + CI gates).
+- Registro de decisiÃ³n inmutable (WORM).
+- SeparaciÃ³n de â€œdecidirâ€ y â€œejecutarâ€.
+- DetecciÃ³n de bypass (tests + CI gates).
 - Versionado de reglas de claves y scopes.
-- Ambigüedad detiene efecto (FLAG_AMBIGUOUS), nunca “accept por conveniencia”.
+- AmbigÃ¼edad detiene efecto (FLAG_AMBIGUOUS), nunca â€œaccept por convenienciaâ€.
 
 ---
 
-## 7) Pruebas
+## Pruebas
 
 ### 7.1 Unitarias
-- Misma operación → misma `idempotency_key`.
-- Primer intento → `ACCEPT_FIRST`.
-- Reintento exacto → `REJECT_DUPLICATE`.
-- Colisión controlada → `FLAG_AMBIGUOUS`.
+- Misma operaciÃ³n â†’ misma `idempotency_key`.
+- Primer intento â†’ `ACCEPT_FIRST`.
+- Reintento exacto â†’ `REJECT_DUPLICATE`.
+- ColisiÃ³n controlada â†’ `FLAG_AMBIGUOUS`.
 - Todo record incluye `rule_version` y referencias a evidencia.
 
 ### 7.2 Propiedades (property-based)
-- **At-most-once lógico:** N reintentos ⇒ exactamente 1 `ACCEPT_FIRST`.
-- **Determinismo:** misma entrada ⇒ misma decisión.
+- **At-most-once lÃ³gico:** N reintentos â‡’ exactamente 1 `ACCEPT_FIRST`.
+- **Determinismo:** misma entrada â‡’ misma decisiÃ³n.
 - **Monotonicidad:** registros de idempotencia solo crecen.
 
-### 7.3 Sistémicas
-- Retries masivos concurrentes (simulación de fallos parciales).
+### 7.3 SistÃ©micas
+- Retries masivos concurrentes (simulaciÃ³n de fallos parciales).
 - Reordenamiento temporal de eventos.
 - Replay completo desde ledger WORM:
-  - reproduce decisiones del Guardian idénticas.
+  - reproduce decisiones del Guardian idÃ©nticas.
 - Ataque de bypass:
-  - intento de escribir sin Guardian ⇒ detectado y bloqueado.
+  - intento de escribir sin Guardian â‡’ detectado y bloqueado.
 
 ---
 
-## 8) Criterios de Aceptación
+## Criterios de AceptaciÃ³n
 
 Este RFC se considera cumplido cuando:
-1. Existe contrato de `IdempotencyKey` + `IdempotencyRecord` con decisiones explícitas.
+1. Existe contrato de `IdempotencyKey` + `IdempotencyRecord` con decisiones explÃ­citas.
 2. Las decisiones se registran append-only y son exportables como evidencia.
-3. El sistema puede demostrar “at-most-once lógico” bajo retries y concurrencia.
-4. La ambigüedad detiene efectos y queda registrada.
+3. El sistema puede demostrar â€œat-most-once lÃ³gicoâ€ bajo retries y concurrencia.
+4. La ambigÃ¼edad detiene efectos y queda registrada.
 5. Replay desde ledger reproduce las decisiones de idempotencia.
 
 ---
 
-## 9) Assumptions
+## Assumptions
 
-- La idempotencia en Tenon es más importante que throughput.
-- El costo de detener por ambigüedad es menor que el costo de duplicar “verdad”.
+- La idempotencia en Tenon es mÃ¡s importante que throughput.
+- El costo de detener por ambigÃ¼edad es menor que el costo de duplicar â€œverdadâ€.
 - El ledger WORM es el ancla probatoria para decisiones del Guardian.
