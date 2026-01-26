@@ -1,13 +1,13 @@
-﻿# RFC-17 â€” Hybrid Persistence Layer (PostgreSQL + WORM Object Storage) (DRAFT)
+﻿# RFC-17 — Hybrid Persistence Layer (PostgreSQL + WORM Object Storage) (DRAFT)
 
-## PropÃ³sito
+## Propósito
 
-Definir la **capa de persistencia hÃ­brida** de TENON que reemplaza almacenes en memoria por una arquitectura **durable, auditable y legalmente defendible**, combinando:
+Definir la **capa de persistencia hí­brida** de TENON que reemplaza almacenes en memoria por una arquitectura **durable, auditable y legalmente defendible**, combinando:
 
 * **SQL transaccional (hot data)** para metadatos, estados y consultas operativas.
 * **Object Storage WORM (cold data)** para evidencia cruda inmutable.
 
-Este RFC establece **quÃ© se guarda**, **dÃ³nde**, **con quÃ© garantÃ­as**, y **cÃ³mo se accede**, manteniendo al **Core completamente agnÃ³stico** del backend fÃ­sico.
+Este RFC establece **qué se guarda**, **dónde**, **con qué garantí­as**, y **cómo se accede**, manteniendo al **Core completamente agnóstico** del backend fí­sico.
 
 ---
 
@@ -15,9 +15,9 @@ Este RFC establece **quÃ© se guarda**, **dÃ³nde**, **con quÃ© garantÃ­as
 
 Este RFC **NO**:
 
-* Introduce lÃ³gica de negocio.
+* Introduce lógica de negocio.
 * Define endpoints de API (RFC-14).
-* Define dashboards o visualizaciÃ³n (RFC-22).
+* Define dashboards o visualización (RFC-22).
 * Define infraestructura de despliegue (RFC-16).
 * Optimiza costos de almacenamiento.
 
@@ -29,18 +29,18 @@ Este RFC **NO**:
 
    * Todo registro SQL que referencia evidencia cruda **debe** apuntar a un objeto existente y verificable en Object Storage.
 
-2. **WORM FÃ­sico**
+2. **WORM Fí­sico**
 
    * La evidencia cruda es **inalterable**:
 
      * sin overwrite,
      * sin delete,
      * sin truncado,
-       durante el perÃ­odo de retenciÃ³n legal.
+       durante el perí­odo de retención legal.
 
-3. **Append-Only SemÃ¡ntico**
+3. **Append-Only Semántico**
 
-   * NingÃºn evento, estado o evidencia se modifica.
+   * Ningíºn evento, estado o evidencia se modifica.
    * Las correcciones son **nuevos eventos** (RFC-08/09).
 
 4. **Aislamiento Transaccional Fuerte**
@@ -48,9 +48,9 @@ Este RFC **NO**:
    * Las mutaciones de estado usan **Serializable isolation**.
    * No se permiten lecturas sucias ni escrituras fantasma.
 
-5. **Core AgnÃ³stico**
+5. **Core Agnóstico**
 
-   * El Core interactÃºa solo vÃ­a **interfaces** (ports).
+   * El Core interactíºa solo ví­a **interfaces** (ports).
    * No conoce SQL, buckets ni SDKs cloud.
 
 ---
@@ -71,9 +71,9 @@ Todos:
 
 ---
 
-## DiseÃ±o TÃ©cnico
+## Diseí±o Técnico
 
-## Arquitectura LÃ³gica
+## Arquitectura Lógica
 
 ```
 Core (Pure Logic)
@@ -89,17 +89,17 @@ PostgreSQL        WORM Storage
 
 ---
 
-## Hot Data â€” PostgreSQL
+## Hot Data — PostgreSQL
 
 ### Alcance
 
 * Metadatos de eventos
 * Estados del dinero
 * Discrepancias
-* SeÃ±ales de riesgo
-* Ãndices de bÃºsqueda
+* Seí±ales de riesgo
+* índices de bíºsqueda
 
-### Propiedades TÃ©cnicas
+### Propiedades Técnicas
 
 * **Isolation level**: `SERIALIZABLE`
 * **Transacciones cortas**
@@ -110,29 +110,29 @@ PostgreSQL        WORM Storage
 * Tablas **append-only**
 * Sin `UPDATE`
 * Sin `DELETE`
-* Versionado explÃ­cito
+* Versionado explí­cito
 
 ### Particionamiento
 
 * Por tiempo (`YYYY_MM`)
 * Evita full scans
-* Facilita retenciÃ³n lÃ³gica
+* Facilita retención lógica
 
 ---
 
-## Cold Data â€” Object Storage WORM
+## Cold Data — Object Storage WORM
 
 ### Alcance
 
 * RawPayload original
 * Evidencia forense
-* Snapshots histÃ³ricos exportables
+* Snapshots históricos exportables
 
 ### Requisitos
 
 * **Object Lock habilitado**
 * **Compliance Mode**
-* RetenciÃ³n mÃ­nima: **7 aÃ±os**
+* Retención mí­nima: **7 aí±os**
 
 ### Naming Determinista
 
@@ -153,8 +153,8 @@ Propiedades:
 ### Flujo de Escritura
 
 1. Persistir objeto crudo en WORM
-2. Verificar Ã©xito y hash
-3. Insertar metadatos en SQL (transacciÃ³n)
+2. Verificar éxito y hash
+3. Insertar metadatos en SQL (transacción)
 4. Commit
 
 **Regla**
@@ -171,9 +171,9 @@ Propiedades:
 * `scan(criteria)`
 * `count()`
 
-**GarantÃ­as**
+**Garantí­as**
 
-* No mutaciÃ³n
+* No mutación
 * Orden estable
 * Idempotencia por hash (RFC-10)
 
@@ -182,28 +182,28 @@ Los adaptadores:
 * SQLAdapter
 * ObjectStorageAdapter
 
-envuelven la lÃ³gica fÃ­sica.
+envuelven la lógica fí­sica.
 
 ---
 
 ## Manejo de Concurrencia
 
-* Locks a nivel lÃ³gico (no mutex globales)
-* Conflictos â‡’ retry explÃ­cito
-* Nunca â€œlast write winsâ€
+* Locks a nivel lógico (no mutex globales)
+* Conflictos â‡’ retry explí­cito
+* Nunca “last write wins”
 
 ---
 
-## RetenciÃ³n & Legal Hold
+## Retención & Legal Hold
 
-* RetenciÃ³n WORM:
+* Retención WORM:
 
   * aplicada en bucket
-  * no en aplicaciÃ³n
+  * no en aplicación
 * Legal hold:
 
   * externo al Core
-  * verificable por auditorÃ­a
+  * verificable por auditorí­a
 
 ---
 
@@ -213,23 +213,23 @@ envuelven la lÃ³gica fÃ­sica.
 
 * Inconsistencia SQL â†” Object
 * Bypass de WORM
-* CorrupciÃ³n silenciosa
+* Corrupción silenciosa
 
 ### Abusos
 
 * Intentos de overwrite
-* EliminaciÃ³n temprana
+* Eliminación temprana
 
-### Fallos SistÃ©micos
+### Fallos Sistémicos
 
-* CaÃ­da parcial de storage
+* Caí­da parcial de storage
 * Latencia elevada en escritura
 
 **Mitigaciones**
 
 * Escritura en dos fases
 * Hash como verdad
-* Fallo explÃ­cito y visible
+* Fallo explí­cito y visible
 
 ---
 
@@ -238,7 +238,7 @@ envuelven la lÃ³gica fÃ­sica.
 ### Unitarias
 
 * Adaptadores SQL y Object
-* ValidaciÃ³n de paths deterministas
+* Validación de paths deterministas
 
 ### Propiedades
 
@@ -246,23 +246,23 @@ envuelven la lÃ³gica fÃ­sica.
 * Integridad referencial
 * Aislamiento Serializable
 
-### SistÃ©micas
+### Sistémicas
 
-* Ingesta real â†’ persistencia hÃ­brida
+* Ingesta real â†’ persistencia hí­brida
 * Replays completos desde evidencia
 
 ### Forenses
 
-* VerificaciÃ³n WORM
-* RecomputaciÃ³n de hashes
-* ReconstrucciÃ³n histÃ³rica completa
+* Verificación WORM
+* Recomputación de hashes
+* Reconstrucción histórica completa
 
 ---
 
-## Criterios de AceptaciÃ³n
+## Criterios de Aceptación
 
-* NingÃºn UPDATE/DELETE posible
-* WORM fÃ­sico verificable
+* Ningíºn UPDATE/DELETE posible
+* WORM fí­sico verificable
 * Core sin dependencias de DB
 * Replay completo desde cold data
 * Transacciones serializables comprobadas
@@ -273,6 +273,6 @@ envuelven la lÃ³gica fÃ­sica.
 
 * Object Storage soporta Object Lock real
 * PostgreSQL configurado para Serializable
-* Infraestructura proveÃ­da por RFC-16
+* Infraestructura proveí­da por RFC-16
 
 ---

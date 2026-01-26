@@ -1,15 +1,15 @@
-﻿# RFC-16 â€” Infrastructure Deployment & Infrastructure as Code (IaC) (DRAFT)
+﻿# RFC-16 — Infrastructure Deployment & Infrastructure as Code (IaC) (DRAFT)
 
-## PropÃ³sito
+## Propósito
 
-Definir la **arquitectura de despliegue inmutable** y la **infraestructura como cÃ³digo (IaC)** que ejecuta TENON como **infraestructura financiera crÃ­tica**, garantizando:
+Definir la **arquitectura de despliegue inmutable** y la **infraestructura como código (IaC)** que ejecuta TENON como **infraestructura financiera crí­tica**, garantizando:
 
 * reproducibilidad entre entornos,
-* cero acceso humano a producciÃ³n,
+* cero acceso humano a producción,
 * control total de cambios,
 * y aislamiento operacional coherente con RFC-01 a RFC-15.
 
-Este RFC responde **cÃ³mo corre TENON**, **dÃ³nde corre** y **cÃ³mo se gobiernan los cambios**, sin introducir lÃ³gica de negocio.
+Este RFC responde **cómo corre TENON**, **dónde corre** y **cómo se gobiernan los cambios**, sin introducir lógica de negocio.
 
 ---
 
@@ -18,8 +18,8 @@ Este RFC responde **cÃ³mo corre TENON**, **dÃ³nde corre** y **cÃ³mo se gob
 Este RFC **NO**:
 
 * Define endpoints, contratos o comportamiento del Runtime (RFC-14).
-* Define persistencia lÃ³gica o WORM (RFC-17).
-* Define dashboards o visualizaciÃ³n (RFC-22).
+* Define persistencia lógica o WORM (RFC-17).
+* Define dashboards o visualización (RFC-22).
 * Optimiza costos cloud.
 * Permite accesos manuales a nodos.
 
@@ -42,23 +42,23 @@ Este RFC **NO**:
      * IaC
      * despliegue controlado
 
-3. **SeparaciÃ³n Build vs Run**
+3. **Separación Build vs Run**
 
    * Build-time â‰  Runtime.
-   * NingÃºn secreto se inyecta en build.
+   * Ningíºn secreto se inyecta en build.
 
 4. **Despliegue Declarativo**
 
    * El estado deseado se define en IaC.
-   * El runtime converge a ese estado o falla explÃ­citamente.
+   * El runtime converge a ese estado o falla explí­citamente.
 
 5. **Observabilidad de Vida**
 
    * El sistema debe poder declarar:
 
-     * â€œestoy vivoâ€
-     * â€œestoy listoâ€
-   * sin exponer mÃ©tricas tÃ©cnicas.
+     * “estoy vivo”
+     * “estoy listo”
+   * sin exponer métricas técnicas.
 
 ---
 
@@ -72,16 +72,16 @@ Este RFC **NO**:
 
 ---
 
-## DiseÃ±o TÃ©cnico
+## Diseí±o Técnico
 
-### ContenerizaciÃ³n
+### Contenerización
 
 #### Docker
 
 * **Multi-stage build**
 
-  * Stage 1: build (dependencias, compilaciÃ³n)
-  * Stage 2: runtime mÃ­nimo
+  * Stage 1: build (dependencias, compilación)
+  * Stage 2: runtime mí­nimo
 * Imagen base:
 
   * **Distroless** (o equivalente)
@@ -89,20 +89,20 @@ Este RFC **NO**:
 
 **Propiedades**
 
-* TamaÃ±o mÃ­nimo
+* Tamaí±o mí­nimo
 * Superficie de ataque reducida
 * Sin shells interactivos
 
 ---
 
-### OrquestaciÃ³n
+### Orquestación
 
 #### Kubernetes (K8s)
 
 * Cada componente corre como:
 
-  * `Deployment` o `StatefulSet` (segÃºn rol)
-* RÃ©plicas mÃ­nimas > 1 para runtime API.
+  * `Deployment` o `StatefulSet` (segíºn rol)
+* Réplicas mí­nimas > 1 para runtime API.
 
 ---
 
@@ -120,27 +120,27 @@ Este RFC **NO**:
 
 * Verifica:
 
-  * conexiÃ³n a base de datos
+  * conexión a base de datos
   * acceso a object storage
 * Si falla:
 
-  * el pod **no recibe trÃ¡fico**.
+  * el pod **no recibe tráfico**.
 
 ---
 
-## GestiÃ³n de ConfiguraciÃ³n y Secretos
+## Gestión de Configuración y Secretos
 
 ### Secret Management
 
 * **Prohibido**:
 
-  * secretos en cÃ³digo
+  * secretos en código
   * secretos en variables de entorno en texto plano
 * **Permitido**:
 
   * Vault
   * Cloud Secret Manager
-  * InyecciÃ³n en runtime vÃ­a volumen o sidecar
+  * Inyección en runtime ví­a volumen o sidecar
 
 ---
 
@@ -156,7 +156,7 @@ Este RFC **NO**:
 * VPC / Networking
 * Bases de datos
 * Buckets de Object Storage
-* ClÃºster Kubernetes
+* Clíºster Kubernetes
 * IAM / Service Accounts
 
 ### Principios
@@ -169,16 +169,16 @@ Este RFC **NO**:
 
 ## Aislamiento por Entorno
 
-| Entorno | PropÃ³sito               |
+| Entorno | Propósito               |
 | ------- | ----------------------- |
 | Dev     | Desarrollo activo       |
-| Stage   | ValidaciÃ³n E2E          |
-| Prod    | OperaciÃ³n institucional |
+| Stage   | Validación E2E          |
+| Prod    | Operación institucional |
 
 **Regla**
 
 * Misma imagen
-* Distinta configuraciÃ³n y secretos
+* Distinta configuración y secretos
 
 ---
 
@@ -190,7 +190,7 @@ Este RFC **NO**:
 4. IaC actualiza estado deseado
 5. K8s converge
 6. Probes validan
-7. TrÃ¡fico habilitado
+7. Tráfico habilitado
 
 ---
 
@@ -198,15 +198,15 @@ Este RFC **NO**:
 
 | Escenario         | Comportamiento        |
 | ----------------- | --------------------- |
-| Imagen invÃ¡lida   | Rollback automÃ¡tico   |
-| Dependencia caÃ­da | Readiness = false     |
-| SaturaciÃ³n        | Backpressure (RFC-14) |
-| Config invÃ¡lida   | Pod no entra en Ready |
+| Imagen inválida   | Rollback automático   |
+| Dependencia caí­da | Readiness = false     |
+| Saturación        | Backpressure (RFC-14) |
+| Config inválida   | Pod no entra en Ready |
 
 Nunca:
 
 * silencios
-* degradaciÃ³n oculta
+* degradación oculta
 
 ---
 
@@ -219,19 +219,19 @@ Nunca:
 
 ### Abusos
 
-* Acceso humano â€œtemporalâ€
+* Acceso humano “temporal”
 * Hotfixes directos
 
-### Fallos SistÃ©micos
+### Fallos Sistémicos
 
-* ClÃºster inconsistente
+* Clíºster inconsistente
 * Secretos expuestos
 
 **Mitigaciones**
 
 * Branch protection
-* AuditorÃ­a IaC
-* ProhibiciÃ³n explÃ­cita de SSH
+* Auditorí­a IaC
+* Prohibición explí­cita de SSH
 
 ---
 
@@ -239,31 +239,31 @@ Nunca:
 
 ### Unitarias
 
-* ValidaciÃ³n de manifiestos
+* Validación de manifiestos
 * Lint de IaC
 
 ### Propiedades
 
-* Inmutabilidad de imÃ¡genes
+* Inmutabilidad de imágenes
 * Reproducibilidad de despliegue
 
-### SistÃ©micas
+### Sistémicas
 
-* Despliegue limpio en entorno vacÃ­o
+* Despliegue limpio en entorno vací­o
 * Rollback controlado
 
 ### Forenses
 
-* AuditorÃ­a de cambios infra
+* Auditorí­a de cambios infra
 * Trazabilidad Git â†’ Runtime
 
 ---
 
-## Criterios de AceptaciÃ³n
+## Criterios de Aceptación
 
-* Imagen idÃ©ntica en todos los entornos
-* NingÃºn acceso humano a Prod
-* IaC Ãºnico mecanismo de cambio
+* Imagen idéntica en todos los entornos
+* Ningíºn acceso humano a Prod
+* IaC íºnico mecanismo de cambio
 * Probes funcionales y verificables
 * Rollback probado
 
@@ -273,6 +273,6 @@ Nunca:
 
 * Cloud provider soporta K8s y Object Storage
 * El Core es determinista
-* Persistencia lÃ³gica se define en RFC-17
+* Persistencia lógica se define en RFC-17
 
 ---

@@ -1,10 +1,10 @@
-﻿# RFC-15 â€” Golden Path Integration & End-to-End Testing (DRAFT)
+﻿# RFC-15 — Golden Path Integration & End-to-End Testing (DRAFT)
 
-## PropÃ³sito
+## Propósito
 
-Definir el **Golden Path institucional** de TENON y la **suite de pruebas End-to-End (E2E)** que valida, de forma **caja negra**, que el sistema completo preserva **integridad, trazabilidad y determinismo** desde la entrada por API hasta la detecciÃ³n final de riesgo.
+Definir el **Golden Path institucional** de TENON y la **suite de pruebas End-to-End (E2E)** que valida, de forma **caja negra**, que el sistema completo preserva **integridad, trazabilidad y determinismo** desde la entrada por API hasta la detección final de riesgo.
 
-Este RFC convierte la arquitectura en un **sistema demostrable**, no solo correcto por diseÃ±o.
+Este RFC convierte la arquitectura en un **sistema demostrable**, no solo correcto por diseí±o.
 
 ---
 
@@ -13,10 +13,10 @@ Este RFC convierte la arquitectura en un **sistema demostrable**, no solo correc
 Este RFC **NO**:
 
 * Introduce nuevas reglas de negocio.
-* Ajusta lÃ³gica interna de correlaciÃ³n, estados o riesgo.
+* Ajusta lógica interna de correlación, estados o riesgo.
 * Define infraestructura de despliegue.
-* Define persistencia fÃ­sica.
-* Optimiza performance tÃ©cnica fuera de SLOs explÃ­citos.
+* Define persistencia fí­sica.
+* Optimiza performance técnica fuera de SLOs explí­citos.
 
 ---
 
@@ -30,22 +30,22 @@ Este RFC **NO**:
      * persistido,
      * correlacionado,
      * observable.
-   * No existen â€œsaltos invisiblesâ€.
+   * No existen “saltos invisibles”.
 
 2. **Caja Negra**
 
    * Las pruebas E2E **no acceden** a `core/`.
-   * Solo interactÃºan vÃ­a Runtime API (RFC-14).
+   * Solo interactíºan ví­a Runtime API (RFC-14).
 
 3. **Determinismo Reproducible**
 
    * Mismo input + mismas versiones â‡’ mismo resultado observable.
-   * Cualquier variaciÃ³n debe explicarse por versiÃ³n.
+   * Cualquier variación debe explicarse por versión.
 
 4. **Latencia Observable**
 
    * El tiempo de residencia (dwell time) en cada etapa es medible.
-   * No existen â€œzonas oscurasâ€.
+   * No existen “zonas oscuras”.
 
 5. **Resultados Finitos**
 
@@ -73,9 +73,9 @@ Todos gobernados por:
 
 ---
 
-## DefiniciÃ³n del Golden Path
+## Definición del Golden Path
 
-### Flujo CanÃ³nico
+### Flujo Canónico
 
 ```
 API Ingest
@@ -99,7 +99,7 @@ Causality Attribution (RFC-07)
 Risk Evaluation (RFC-13)
 ```
 
-Cada transiciÃ³n:
+Cada transición:
 
 * deja evidencia,
 * registra timestamps,
@@ -107,28 +107,28 @@ Cada transiciÃ³n:
 
 ---
 
-## DiseÃ±o TÃ©cnico â€” Pruebas E2E
+## Diseí±o Técnico — Pruebas E2E
 
 ### Cliente de Pruebas Externo
 
 * Proceso independiente del sistema TENON.
-* Consume Ãºnicamente:
+* Consume íºnicamente:
 
   * Runtime API (RFC-14).
 * Sin acceso a DB, colas o core.
 
 ---
 
-### Escenario CanÃ³nico de ValidaciÃ³n
+### Escenario Canónico de Validación
 
-**Caso base: conciliaciÃ³n parcial**
+**Caso base: conciliación parcial**
 
-* InyecciÃ³n:
+* Inyección:
 
   * 100 eventos de pago
-  * 98 con correlaciÃ³n completa
+  * 98 con correlación completa
   * 2 con discrepancia esperada
-* CaracterÃ­sticas:
+* Caracterí­sticas:
 
   * eventos fuera de orden
   * timestamps reales
@@ -144,28 +144,28 @@ Cada transiciÃ³n:
 **Validaciones**
 
 * Existen **exactamente** 2 discrepancias.
-* TipologÃ­a correcta (RFC-06).
-* Causalidad explÃ­cita (RFC-07).
+* Tipologí­a correcta (RFC-06).
+* Causalidad explí­cita (RFC-07).
 * Riesgo agregado coherente (RFC-13).
 
 ---
 
 ## Latencia & Observabilidad
 
-### MÃ©tricas Institucionales
+### Métricas Institucionales
 
 Por evento:
 
-| Etapa            | MÃ©trica           |
+| Etapa            | Métrica           |
 | ---------------- | ----------------- |
 | Ingest           | accepted_at       |
-| CanonicalizaciÃ³n | canonicalized_at  |
-| NormalizaciÃ³n    | normalized_at     |
-| CorrelaciÃ³n      | correlated_at     |
+| Canonicalización | canonicalized_at  |
+| Normalización    | normalized_at     |
+| Correlación      | correlated_at     |
 | Estado           | state_resolved_at |
 | Riesgo           | risk_emitted_at   |
 
-> No son mÃ©tricas tÃ©cnicas: son **evidencia de flujo**.
+> No son métricas técnicas: son **evidencia de flujo**.
 
 ---
 
@@ -181,7 +181,7 @@ Por evento:
 El incumplimiento:
 
 * no rompe el sistema,
-* **sÃ­ eleva riesgo operativo**.
+* **sí­ eleva riesgo operativo**.
 
 ---
 
@@ -189,11 +189,11 @@ El incumplimiento:
 
 | Escenario        | Resultado Esperado          |
 | ---------------- | --------------------------- |
-| Evento invÃ¡lido  | Rechazo explÃ­cito           |
+| Evento inválido  | Rechazo explí­cito           |
 | Evento duplicado | Evidencia de idempotencia   |
-| Eventos tardÃ­os  | Estado degradado, no error  |
-| SaturaciÃ³n       | Backpressure observable     |
-| Fallo parcial    | RecuperaciÃ³n sin corrupciÃ³n |
+| Eventos tardí­os  | Estado degradado, no error  |
+| Saturación       | Backpressure observable     |
+| Fallo parcial    | Recuperación sin corrupción |
 
 ---
 
@@ -202,21 +202,21 @@ El incumplimiento:
 ### Riesgos
 
 * Falsos positivos E2E
-* Tests frÃ¡giles dependientes de timing
+* Tests frágiles dependientes de timing
 
 ### Abusos
 
-* Pruebas que â€œconocenâ€ el core
+* Pruebas que “conocen” el core
 * Validaciones laxas
 
-### Fallos SistÃ©micos
+### Fallos Sistémicos
 
 * Resultados no deterministas
 * Estados colgantes
 
 **Mitigaciones**
 
-* OrÃ¡culos explÃ­citos
+* Oráculos explí­citos
 * Ventanas temporales definidas
 * Replays controlados
 
@@ -234,7 +234,7 @@ El incumplimiento:
 * Determinismo del resultado final
 * Inmutabilidad del historial
 
-### SistÃ©micas
+### Sistémicas
 
 * Golden Path completo
 * Escenarios degradados
@@ -242,25 +242,25 @@ El incumplimiento:
 
 ### Forenses
 
-* ReconstrucciÃ³n del flujo completo
-* VerificaciÃ³n de timestamps y hashes
+* Reconstrucción del flujo completo
+* Verificación de timestamps y hashes
 
 ---
 
-## Criterios de AceptaciÃ³n
+## Criterios de Aceptación
 
 * Golden Path documentado y cerrado
 * Suite E2E ejecutable en CI
 * Resultados deterministas
 * Discrepancias exactamente explicadas
-* Riesgo coherente con seÃ±ales RFC-13
+* Riesgo coherente con seí±ales RFC-13
 
 ---
 
 ## Assumptions
 
 * Runtime API existe y es estable (RFC-14)
-* Persistencia garantiza durabilidad lÃ³gica
+* Persistencia garantiza durabilidad lógica
 * Infraestructura soporta pruebas repetibles
 
 ---
