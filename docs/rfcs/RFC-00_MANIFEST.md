@@ -1,1 +1,0 @@
-# RFC-00 Manifest
